@@ -39,8 +39,11 @@ out/
 ### Mac ###
 .DS_Store
 
-### application.yml
-src/main/resources/application.yml
+# local 환경 설정
+src/main/resources/application-local.yml
+
+# 운영 비밀 설정
+src/main/resources/application-prod.yml
 
 ### DB ###
 *.db
