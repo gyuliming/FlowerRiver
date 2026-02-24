@@ -34,6 +34,7 @@ public class WarehouseCommandService {
         Warehouse warehouse = warehouseRepository.save(
                 Warehouse.builder()
                         .code(req.getCode())
+                        .name(req.getName())
                         .address(req.getAddress())
                         .build()
         );
