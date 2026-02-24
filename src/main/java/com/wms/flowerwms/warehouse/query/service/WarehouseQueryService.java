@@ -31,8 +31,9 @@ public class WarehouseQueryService {
 
     public WarehouseDetailView detail(Long warehouseId) {
         WarehouseDetailView view = warehouseRepository.findDetail(warehouseId);
-        if (view == null) return null;
-
+        if (view == null) {
+            throw new IllegalArgumentException("존재하지 않는 창고입니다.");
+        }
         view.setSections(sectionRepository.findSectionSummaries(warehouseId));
         return view;
     }
