@@ -13,6 +13,10 @@ public class WarehouseCreateRequest {
     @Size(max = 50, message = "창고 코드는 50자 이하여야 합니다.")
     private String code;
 
+    @NotBlank(message = "창고 이름은 필수입니다.")
+    @Size(max = 100, message = "창고 이름은 100자 이하여야 합니다.")
+    private String name;
+
     @NotBlank(message = "주소는 필수입니다.")
     @Size(max = 255, message = "주소는 255자 이하여야 합니다.")
     private String address;

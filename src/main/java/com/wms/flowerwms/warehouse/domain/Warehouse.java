@@ -21,6 +21,9 @@ public class Warehouse {
     @Column(nullable = false, unique = true, length = 50)
     private String code;
 
+    @Column(nullable = false, length = 100)
+    private String name;
+
     @Column(nullable = false, length = 255)
     private String address;
 
