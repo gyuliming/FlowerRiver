@@ -5,12 +5,6 @@ spring:
 server:
   port: 8080
 
-mybatis:
-  mapper-locations: classpath:/mybatis/**/*.xml
-  type-aliases-package: com.wms.flowerwms
-  configuration:
-    map-underscore-to-camel-case: true
-
 logging:
   level:
     root: INFO
