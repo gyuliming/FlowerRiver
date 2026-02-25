@@ -41,6 +41,6 @@ public class ConcurrencyTest {
 
         int used = palletRepository.findById(palletId).orElseThrow().getUsedBoxQty();
         System.out.println("테스트 후 usedBoxQty 개수 : " + used);
-        assertThat(used).isBetween(1, threads);
+        assertThat(used).isEqualTo(threads);
     }
 }
