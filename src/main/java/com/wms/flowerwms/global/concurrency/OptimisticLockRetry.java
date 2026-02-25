@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class OptimisticLockRetry {
 
     public void run(Runnable action) {
-        int maxRetries = 5;
+        int maxRetries = 10;
         int backoffMs = 20;
 
         for (int attempt = 1; attempt <= maxRetries; attempt++) {
@@ -15,7 +15,11 @@ public class OptimisticLockRetry {
                 action.run();
                 return;
             } catch (OptimisticLockingFailureException e) {
-                if (attempt == maxRetries) throw e;
+                System.out.println("충돌 감지 attempt: " + attempt);
+                if (attempt == maxRetries) {
+                    System.out.println("재시도 소진 - 실패");
+                    throw e;
+                }
                 sleep(backoffMs * attempt);
             }
         }
