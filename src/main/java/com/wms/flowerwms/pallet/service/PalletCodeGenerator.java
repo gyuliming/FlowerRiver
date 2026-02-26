@@ -1,5 +1,6 @@
 package com.wms.flowerwms.pallet.service;
 
+import com.wms.flowerwms.pallet.repository.PalletRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicLong;
