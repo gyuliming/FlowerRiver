@@ -7,7 +7,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 public class PalletCodeGenerator {
 
-    private final AtomicLong seq = new AtomicLong(1);
+    private final AtomicLong seq;
+
+    public PalletCodeGenerator(PalletRepository palletRepository) {
+        long maxId = palletRepository.findMaxId().orElse(0L);
+        this.seq = new AtomicLong(maxId + 1);
+    }
 
     public String nextCode() {
         long n = seq.getAndIncrement();

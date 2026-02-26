@@ -28,6 +28,7 @@ public class DomainSmokeTest {
         Warehouse wh = warehouseRepository.save(
                 Warehouse.builder()
                         .code("WH-001")
+                        .name("강남 창고")
                         .address("서울 강남구")
                         .build()
         );

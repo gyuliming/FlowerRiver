@@ -1,8 +1,10 @@
 package com.wms.flowerwms.global.concurrency;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class OptimisticLockRetry {
 
@@ -15,9 +17,9 @@ public class OptimisticLockRetry {
                 action.run();
                 return;
             } catch (OptimisticLockingFailureException e) {
-                System.out.println("충돌 감지 attempt: " + attempt);
+                log.warn("충돌 감지 attempt: " + attempt);
                 if (attempt == maxRetries) {
-                    System.out.println("재시도 소진 - 실패");
+                    log.warn("재시도 소진 - 실패");
                     throw e;
                 }
                 sleep(backoffMs * attempt);
