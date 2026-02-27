@@ -11,6 +11,9 @@ import java.util.List;
 public interface SectionRepository extends JpaRepository<Section, Long> {
 
     // 섹션 목록 조회
+    List<Section> findByWarehouseId(Long warehouseId);
+
+    // 섹션 상세 조회
     @Query("""
         select new com.wms.flowerwms.warehouse.query.dto.SectionSummaryRow(
             s.id, s.code, s.type,

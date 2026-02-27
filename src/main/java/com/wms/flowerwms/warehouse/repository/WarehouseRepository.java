@@ -18,22 +18,22 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
     // 창고 목록 페이징 검색
     @Query("""
-        select new com.wms.flowerwms.warehouse.query.dto.WarehouseListRow(
-            w.id, w.code, w.name, w.address, w.status,
-            count(distinct s.id),
-            count(distinct p.id),
-            coalesce(sum(p.maxBoxQty), 0),
-            coalesce(sum(p.usedBoxQty), 0)
-        )
-        from Warehouse w
-        left join Section s on s.warehouse = w
-        left join Pallet p on p.section = s
-        where (:keyword is null or :keyword = ''
-               or w.code like concat('%', :keyword, '%')
-               or w.name like concat('%', :keyword, '%')
-               or w.address like concat('%', :keyword, '%'))
-        group by w.id, w.code, w.name, w.address, w.status
-        """)
+    select new com.wms.flowerwms.warehouse.query.dto.WarehouseListRow(
+        w.id, w.code, w.name, w.address, w.status,
+        count(distinct s.id),
+        count(distinct p.id),
+        coalesce(sum(p.maxBoxQty), 0),
+        coalesce(sum(p.usedBoxQty), 0)
+    )
+    from Warehouse w
+    left join Section s on s.warehouse = w
+    left join Pallet p on p.section = s
+    where (:keyword is null or :keyword = ''
+           or w.code like concat('%', :keyword, '%')
+           or w.name like concat('%', :keyword, '%')
+           or w.address like concat('%', :keyword, '%'))
+    group by w.id, w.code, w.name, w.address, w.status
+    """)
     Page<WarehouseListRow> searchWarehouses(@Param("keyword") String keyword, Pageable pageable);
 
     // 창고 상세 조회
