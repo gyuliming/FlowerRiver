@@ -2,11 +2,13 @@ package com.wms.flowerwms.warehouse.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class WarehouseCreateRequest {
 
     @NotBlank(message = "창고 코드는 필수입니다.")
@@ -21,3 +23,4 @@ public class WarehouseCreateRequest {
     @Size(max = 255, message = "주소는 255자 이하여야 합니다.")
     private String address;
 }
+
