@@ -35,7 +35,7 @@
       <el-table-column prop="usedBox" label="사용량" width="120" align="right" />
       <el-table-column label="사용률" width="120" align="right">
         <template #default="{ row }">
-          {{ usageRate(row.usedBox, row.totalCapacityBox) }}%
+          {{ usageRate(row.usedBox, row.totalCapacityBox) }} %
         </template>
       </el-table-column>
       <el-table-column label="" width="90" align="center">
