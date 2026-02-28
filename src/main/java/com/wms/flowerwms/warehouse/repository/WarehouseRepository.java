@@ -14,8 +14,14 @@ import java.util.Optional;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
-    // 코드로 창고 하나 찾기
+    // 코드로 창고 찾기(중복 확인용)
     Optional<Warehouse> findByCode(String code);
+
+    // 이름으로 창고 찾기(중복 확인용)
+    Optional<Warehouse> findByName(String name);
+
+    // 주소로 창고 찾기(중복 확인용)
+    Optional<Warehouse> findByAddress(String address);
 
     // 창고 목록 페이징 검색
     @Query("""

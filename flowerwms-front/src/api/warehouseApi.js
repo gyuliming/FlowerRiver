@@ -14,5 +14,15 @@ export function fetchWarehouseDetail(id) {
 
 // 창고 등록
 export function fetchWarehouseRegister(data) {
-    return http.post('/warehouses', data)
+    return http.post(`/warehouses`, data)
+}
+
+// 창고 수정
+export function updateWarehouse(id, data) {
+    return http.put(`/warehouses/${id}`, data)
+}
+
+// 창고 폐쇄
+export function closeWarehouse(id) {
+    return http.patch(`/warehouses/${id}/close`)
 }

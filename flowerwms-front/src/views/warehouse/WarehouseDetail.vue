@@ -3,7 +3,13 @@
     <!-- 창고 정보 -->
     <el-card style="margin-bottom: 16px;">
       <template #header>
-        <span style="font-weight: 600;">창고 정보</span>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight: 600;">창고 정보</span>
+          <div style="display:flex; gap:8px;">
+            <el-button type="primary" @click="openEditModal" :disabled="warehouse.status === 'CLOSED'">수정</el-button>
+            <el-button type="danger" @click="confirmClose" :disabled="warehouse.status === 'CLOSED'">폐쇄</el-button>
+          </div>
+        </div>
       </template>
       <el-descriptions :column="3" border>
         <el-descriptions-item label="코드">{{ warehouse.code }}</el-descriptions-item>
@@ -53,12 +59,33 @@
         </el-col>
       </el-row>
     </el-card>
+
+    <!-- 수정 모달 -->
+    <el-dialog v-model="editModal" title="창고 수정" width="500px">
+      <el-form :model="editForm" label-width="100px" hide-required-asterisk>
+        <el-form-item label="창고명">
+          <el-input v-model="editForm.name" />
+        </el-form-item>
+        <el-form-item label="주소">
+          <div style="display:flex; gap:8px; width:100%;">
+            <el-input v-model="editForm.address" readonly />
+            <el-button @click="searchEditAddress">주소 검색</el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="editModal = false">취소</el-button>
+        <el-button type="primary" @click="submitEdit">수정</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
+
 <script setup>
 import { onMounted, ref } from 'vue'
-import { fetchWarehouseDetail } from '../../api/warehouseApi.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import {closeWarehouse, fetchWarehouseDetail, updateWarehouse} from '../../api/warehouseApi.js'
 
 const props = defineProps({ id: String })
 
@@ -72,9 +99,56 @@ const warehouse = ref({
   sections: []
 })
 
+const editModal = ref(false)
+const editForm = ref({ name: '', address: '' })
+
 function usageRate(used, total) {
   if (!total || total <= 0) return '0.0'
   return ((used / total) * 100).toFixed(1)
+}
+
+function openEditModal() {
+  editForm.value.name = warehouse.value.name
+  editForm.value.address = warehouse.value.address
+  editModal.value = true
+}
+
+async function submitEdit() {
+  try {
+    await updateWarehouse(props.id, editForm.value)
+    ElMessage.success('창고 수정 완료')
+    editModal.value = false
+    const res = await fetchWarehouseDetail(props.id)
+    warehouse.value = res.data.data
+    initMap(warehouse.value.address)  // 지도 갱신
+  } catch (e) {
+    ElMessage.error(e?.response?.data?.message || '수정 실패')
+  }
+}
+
+function confirmClose() {
+  ElMessageBox.confirm('창고를 폐쇄하시겠습니까?', '창고 폐쇄', {
+    confirmButtonText: '예',
+    cancelButtonText: '아니오',
+    type: 'warning'
+  }).then(async () => {
+    try {
+      await closeWarehouse(props.id)
+      ElMessage.success('창고 폐쇄 완료')
+      const res = await fetchWarehouseDetail(props.id)
+      warehouse.value = res.data.data
+    } catch (e) {
+      ElMessage.error(e?.response?.data?.message || '폐쇄 실패')
+    }
+  }).catch(() => {})
+}
+
+function searchEditAddress() {
+  new window.daum.Postcode({
+    oncomplete: (data) => {
+      editForm.value.address = data.roadAddress || data.jibunAddress
+    }
+  }).open()
 }
 
 function initMap(address) {
@@ -83,7 +157,6 @@ function initMap(address) {
     const options = { center: new window.kakao.maps.LatLng(37.5665, 126.9780), level: 1 }
     const map = new window.kakao.maps.Map(container, options)
 
-    // 주소로 좌표 변환
     const geocoder = new window.kakao.maps.services.Geocoder()
     geocoder.addressSearch(address, (result, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
@@ -94,7 +167,6 @@ function initMap(address) {
     })
   })
 }
-
 
 onMounted(async () => {
   const res = await fetchWarehouseDetail(props.id)

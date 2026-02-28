@@ -50,4 +50,9 @@ public class Warehouse {
     public void close() {
         this.status = WarehouseStatus.CLOSED;
     }
+
+    public void update(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
 }

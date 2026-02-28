@@ -8,6 +8,7 @@ import com.wms.flowerwms.section.domain.SectionType;
 import com.wms.flowerwms.section.repository.SectionRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.dto.WarehouseCreateRequest;
+import com.wms.flowerwms.warehouse.dto.WarehouseUpdateRequest;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,17 @@ public class WarehouseCommandService {
     private final PalletRepository palletRepository;
     private final PalletCodeGenerator palletCodeGenerator;
 
+    // 창고 등록
     @Transactional
     public Long createWarehouse(WarehouseCreateRequest req) {
         if (warehouseRepository.findByCode(req.getCode()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 창고 코드입니다.");
+        }
+        if (warehouseRepository.findByName(req.getName()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 창고명입니다.");
+        }
+        if (warehouseRepository.findByAddress(req.getAddress()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 주소입니다.");
         }
 
         Warehouse warehouse = warehouseRepository.save(
@@ -72,5 +80,21 @@ public class WarehouseCommandService {
                             .build()
             );
         }
+    }
+
+    // 창고 수정
+    @Transactional
+    public void updateWarehouse(Long id, WarehouseUpdateRequest req) {
+        Warehouse warehouse = warehouseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다."));
+        warehouse.update(req.getName(), req.getAddress());
+    }
+
+    // 창고 폐쇄(논리적 삭제 -> 상태 = CLOSED 로 전환)
+    @Transactional
+    public void closeWarehouse(Long id) {
+        Warehouse warehouse = warehouseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다."));
+        warehouse.close();
     }
 }
