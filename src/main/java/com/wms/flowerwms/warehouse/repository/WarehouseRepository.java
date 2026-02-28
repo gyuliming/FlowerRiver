@@ -1,6 +1,7 @@
 package com.wms.flowerwms.warehouse.repository;
 
 import com.wms.flowerwms.warehouse.domain.Warehouse;
+import com.wms.flowerwms.warehouse.domain.WarehouseStatus;
 import com.wms.flowerwms.warehouse.query.dto.WarehouseDetailView;
 import com.wms.flowerwms.warehouse.query.dto.WarehouseListRow;
 import org.springframework.data.domain.Page;
@@ -32,9 +33,17 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
            or w.code like concat('%', :keyword, '%')
            or w.name like concat('%', :keyword, '%')
            or w.address like concat('%', :keyword, '%'))
+               and(:code is null or :code = '' or w.code like concat('%', :code, '%'))
+               and (:name is null or :name = '' or w.name like concat('%', :name, '%'))
+               and (:address is null or :address = '' or w.address like concat('%', :address, '%'))
     group by w.id, w.code, w.name, w.address, w.status
     """)
-    Page<WarehouseListRow> searchWarehouses(@Param("keyword") String keyword, Pageable pageable);
+    Page<WarehouseListRow> searchWarehouses(
+            @Param("keyword") String keyword,
+            @Param("code") String code,
+            @Param("name") String name,
+            @Param("address") String address,
+            Pageable pageable);
 
     // 창고 상세 조회
     @Query("""

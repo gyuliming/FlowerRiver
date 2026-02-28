@@ -1,10 +1,10 @@
 package com.wms.flowerwms.warehouse.query.service;
 
 import com.wms.flowerwms.global.paging.PageResponse;
-import com.wms.flowerwms.pallet.repository.PalletRepository;
 import com.wms.flowerwms.section.repository.SectionRepository;
 import com.wms.flowerwms.warehouse.query.dto.WarehouseDetailView;
 import com.wms.flowerwms.warehouse.query.dto.WarehouseListRow;
+import com.wms.flowerwms.warehouse.query.dto.WarehouseSearchCond;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +20,18 @@ public class WarehouseQueryService {
 
     private final WarehouseRepository warehouseRepository;
     private final SectionRepository sectionRepository;
-    private final PalletRepository palletRepository;
 
     @Transactional(readOnly = true)
-    public PageResponse<WarehouseListRow> list(String keyword, Integer page, Integer size) {
+    public PageResponse<WarehouseListRow> list(WarehouseSearchCond cond, Integer page, Integer size) {
         int p = (page == null || page < 1) ? 1 : page;
         int s = (size == null || size < 1 || size > 100) ? 10 : size;
 
         log.info("=== After JPQL 쿼리 실행 ===");
         Page<WarehouseListRow> result = warehouseRepository.searchWarehouses(
-                keyword,
+                cond.getKeyword(),
+                cond.getCode(),
+                cond.getName(),
+                cond.getAddress(),
                 PageRequest.of(p - 1, s)
         );
         log.info("=== 쿼리 완료 ===");
