@@ -11,3 +11,8 @@ export function fetchWarehouses({ keyword, code, name, address, page, size }) {
 export function fetchWarehouseDetail(id) {
     return http.get(`/warehouses/${id}`)
 }
+
+// 창고 등록
+export function fetchWarehouseRegister(data) {
+    return http.post('/warehouses', data)
+}
