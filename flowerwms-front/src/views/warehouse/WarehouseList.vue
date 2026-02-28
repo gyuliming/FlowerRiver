@@ -63,7 +63,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { fetchWarehouses } from '../api/warehouseApi'
+import { fetchWarehouses } from '../../api/warehouseApi.js'
 
 const router = useRouter()
 

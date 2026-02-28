@@ -58,7 +58,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { fetchWarehouseDetail } from '../api/warehouseApi'
+import { fetchWarehouseDetail } from '../../api/warehouseApi.js'
 
 const props = defineProps({ id: String })
 
