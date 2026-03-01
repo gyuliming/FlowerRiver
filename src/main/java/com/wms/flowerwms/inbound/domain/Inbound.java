@@ -1,6 +1,7 @@
 package com.wms.flowerwms.inbound.domain;
 
 import com.wms.flowerwms.pallet.domain.Pallet;
+import com.wms.flowerwms.product.domain.Product;
 import com.wms.flowerwms.section.domain.Section;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import jakarta.persistence.*;
@@ -37,6 +38,10 @@ public class Inbound {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pallet_id")
     private Pallet pallet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     private int boxQty;
 
