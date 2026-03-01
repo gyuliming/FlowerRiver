@@ -26,3 +26,10 @@ export function updateWarehouse(id, data) {
 export function closeWarehouse(id) {
     return http.patch(`/warehouses/${id}/close`)
 }
+
+// 팔레트
+export function fetchPallets(sectionId) {
+    return http.get('/pallets', {
+        params: { sectionId }
+    })
+}
