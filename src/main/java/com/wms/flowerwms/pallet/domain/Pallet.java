@@ -57,4 +57,9 @@ public class Pallet {
         if (usedBoxQty - minusQty < 0) throw new IllegalArgumentException("사용 수량이 0 미만이 될 수 없습니다.");
         usedBoxQty -= minusQty;
     }
+
+    // 팔레트 사용량 증가
+    public void addUsedBoxQty(int qty) {
+        this.usedBoxQty += qty;
+    }
 }
