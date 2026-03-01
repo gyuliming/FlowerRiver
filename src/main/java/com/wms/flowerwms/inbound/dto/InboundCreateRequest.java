@@ -16,6 +16,9 @@ public class InboundCreateRequest {
     @NotNull(message = "팔레트를 선택해주세요.")
     private Long palletId;
 
+    @NotNull(message = "상품을 선택해주세요.")
+    private Long productId;
+
     @Min(value = 1, message = "입고 수량은 1 이상이어야 합니다.")
     private int boxQty;
 }

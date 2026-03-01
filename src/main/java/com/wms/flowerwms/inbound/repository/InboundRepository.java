@@ -12,16 +12,17 @@ public interface InboundRepository extends JpaRepository<Inbound, Long> {
     long countByCodeStartingWith(String prefix);
 
     @Query("""
-        select new com.wms.flowerwms.inbound.query.dto.InboundListRow(
-            i.id, i.code, w.name, s.code, p.code, i.boxQty, i.createdAt
-        )
-        from Inbound i
-        join i.warehouse w
-        join i.section s
-        join i.pallet p
-        where (:warehouseId is null or w.id = :warehouseId)
-        order by i.createdAt desc
-        """)
+    select new com.wms.flowerwms.inbound.query.dto.InboundListRow(
+        i.id, i.code, w.name, s.code, p.code, pr.name, i.boxQty, i.createdAt
+    )
+    from Inbound i
+    join i.warehouse w
+    join i.section s
+    join i.pallet p
+    join i.product pr
+    where (:warehouseId is null or w.id = :warehouseId)
+    order by i.createdAt desc
+    """)
     Page<InboundListRow> searchInbounds(
             @Param("warehouseId") Long warehouseId,
             Pageable pageable

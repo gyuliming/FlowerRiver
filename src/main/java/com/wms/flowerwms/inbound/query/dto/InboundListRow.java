@@ -13,6 +13,7 @@ public class InboundListRow {
     private String warehouseName;
     private String sectionCode;
     private String palletCode;
+    private String productName;
     private int boxQty;
     private LocalDateTime createdAt;
 }

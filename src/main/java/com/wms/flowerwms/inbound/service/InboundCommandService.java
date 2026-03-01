@@ -6,6 +6,8 @@ import com.wms.flowerwms.inbound.dto.InboundCreateRequest;
 import com.wms.flowerwms.inbound.repository.InboundRepository;
 import com.wms.flowerwms.pallet.domain.Pallet;
 import com.wms.flowerwms.pallet.repository.PalletRepository;
+import com.wms.flowerwms.product.domain.Product;
+import com.wms.flowerwms.product.repository.ProductRepository;
 import com.wms.flowerwms.section.domain.Section;
 import com.wms.flowerwms.section.repository.SectionRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
@@ -23,6 +25,7 @@ public class InboundCommandService {
     private final PalletRepository palletRepository;
     private final InboundCodeGenerator inboundCodeGenerator;
     private final SectionRepository sectionRepository;
+    private final ProductRepository productRepository;
 
     @Transactional
     public Long createInbound(InboundCreateRequest req) {
@@ -34,6 +37,14 @@ public class InboundCommandService {
 
         Pallet pallet = palletRepository.findById(req.getPalletId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팔레트입니다."));
+
+        Product product = productRepository.findById(req.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+
+        // storageType 검증 (상품 보관타입과 섹션 타입이 맞는지)
+        if (product.getStorageType() != section.getType()) {
+            throw new IllegalArgumentException("상품 보관 타입과 구역 타입이 맞지 않습니다.");
+        }
 
         // 여유 공간 확인
         int available = pallet.getMaxBoxQty() - pallet.getUsedBoxQty();
@@ -50,6 +61,7 @@ public class InboundCommandService {
                 .warehouse(warehouse)
                 .section(section)
                 .pallet(pallet)
+                .product(product)
                 .boxQty(req.getBoxQty())
                 .build();
 
