@@ -6,10 +6,14 @@
       </div>
       <el-divider style="margin: 1px 0; border-color: #D5B270;" />
       <el-menu router :default-active="$route.path" background-color="#42507C" text-color="#D5B270" active-text-color="#ffffff">
-        <el-sub-menu index="user">
-          <template #title>회원 관리</template>
-          <el-menu-item index="/user">회원 목록</el-menu-item>
-        </el-sub-menu>
+        <el-menu-item index="dashboard">
+          <template #title>대시보드</template>
+        </el-menu-item>
+        <el-divider style="margin: 1px 0; border-color: #D5B270;" />
+
+        <el-menu-item index="user">
+          <template #title>회원 목록</template>
+        </el-menu-item>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 
         <el-sub-menu index="warehouse">
@@ -29,21 +33,28 @@
         <el-sub-menu index="inbound">
           <template #title>입고 관리</template>
           <el-menu-item index="/inbound">입고 목록</el-menu-item>
+          <el-menu-item index="/inbound/register">입고 등록</el-menu-item>
+        </el-sub-menu>
+        <el-divider style="margin: 1px 0; border-color: #D5B270;" />
+
+        <el-sub-menu index="inventory">
+          <template #title>재고 관리</template>
+          <el-menu-item index="/inventory">재고 목록</el-menu-item>
+          <el-menu-item index="/inventory/history">재고 이력</el-menu-item>
         </el-sub-menu>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 
         <el-sub-menu index="outbound">
           <template #title>출고 관리</template>
           <el-menu-item index="/outbound">출고 목록</el-menu-item>
+          <el-menu-item index="/outbound/register">출고 등록</el-menu-item>
         </el-sub-menu>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 
-        <el-menu-item index="dashboard">
-          <template #title>대시보드</template>
-        </el-menu-item>
-        <el-divider style="margin: 1px 0; border-color: #D5B270;" />
       </el-menu>
     </el-aside>
+
+
 
     <el-container>
       <el-header style="border-bottom: 1px solid #eee; display:flex; align-items:center;">
