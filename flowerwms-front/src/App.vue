@@ -19,6 +19,13 @@
         </el-sub-menu>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 
+        <el-sub-menu index="product">
+          <template #title>상품 관리</template>
+          <el-menu-item index="/products">상품 목록</el-menu-item>
+          <el-menu-item index="/products/register">상품 등록</el-menu-item>
+        </el-sub-menu>
+        <el-divider style="margin: 1px 0; border-color: #D5B270;" />
+
         <el-sub-menu index="inbound">
           <template #title>입고 관리</template>
           <el-menu-item index="/inbound">입고 목록</el-menu-item>
