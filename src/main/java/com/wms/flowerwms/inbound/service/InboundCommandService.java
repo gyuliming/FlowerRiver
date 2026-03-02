@@ -10,6 +10,8 @@ import com.wms.flowerwms.product.domain.Product;
 import com.wms.flowerwms.product.repository.ProductRepository;
 import com.wms.flowerwms.section.domain.Section;
 import com.wms.flowerwms.section.repository.SectionRepository;
+import com.wms.flowerwms.stock.domain.Stock;
+import com.wms.flowerwms.stock.repository.StockRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class InboundCommandService {
     private final InboundCodeGenerator inboundCodeGenerator;
     private final SectionRepository sectionRepository;
     private final ProductRepository productRepository;
+    private final StockRepository stockRepository;
 
     @Transactional
     public Long createInbound(InboundCreateRequest req) {
@@ -54,6 +57,19 @@ public class InboundCommandService {
 
         // 팔레트 사용량 증가
         pallet.addUsedBoxQty(req.getBoxQty());
+
+        // 재고 반영 (없으면 새로 생성, 있으면 증가)
+        Stock stock = stockRepository.findByProductAndPallet(product, pallet)
+                .orElseGet(() -> Stock.builder()
+                        .warehouse(warehouse)
+                        .section(section)
+                        .pallet(pallet)
+                        .product(product)
+                        .boxQty(0)
+                        .build());
+
+        stock.add(req.getBoxQty());
+        stockRepository.save(stock);
 
         // 입고 이력 저장
         Inbound inbound = Inbound.builder()
