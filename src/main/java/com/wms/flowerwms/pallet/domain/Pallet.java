@@ -62,4 +62,9 @@ public class Pallet {
     public void addUsedBoxQty(int qty) {
         this.usedBoxQty += qty;
     }
+
+    // 팔레스 사용량 감소
+    public void subtractUsedBoxQty(int qty) {
+        this.usedBoxQty -= qty;
+    }
 }
