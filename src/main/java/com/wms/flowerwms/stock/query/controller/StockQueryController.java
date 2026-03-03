@@ -2,9 +2,10 @@ package com.wms.flowerwms.stock.query.controller;
 
 import com.wms.flowerwms.global.response.ApiResponse;
 import com.wms.flowerwms.global.paging.PageResponse;
-import com.wms.flowerwms.stock.dto.StockPalletResponse;
 import com.wms.flowerwms.stock.query.dto.StockHistoryRow;
 import com.wms.flowerwms.stock.query.dto.StockListRow;
+import com.wms.flowerwms.stock.query.dto.StockProductRow;
+import com.wms.flowerwms.stock.query.dto.StockWarehouseRow;
 import com.wms.flowerwms.stock.query.service.StockQueryService;
 import com.wms.flowerwms.stock.repository.StockRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,22 +43,17 @@ public class StockQueryController {
         return ApiResponse.success(stockQueryService.listHistories(warehouseId, productId, page, size));
     }
 
-    // 재고 있는 팔레트 목록 (출고용)
-    @GetMapping("/pallets")
-    public ApiResponse<List<StockPalletResponse>> getPalletsByProductAndSection(
-            @RequestParam Long productId,
-            @RequestParam Long sectionId
-    ) {
-        List<StockPalletResponse> result = stockRepository
-                .findByProductIdAndSectionIdWithStock(productId, sectionId)
-                .stream()
-                .map(s -> new StockPalletResponse(
-                        s.getPallet().getId(),
-                        s.getPallet().getCode(),
-                        s.getBoxQty()
-                ))
-                .toList();
+    // 재고 있는 상품 목록
+    @GetMapping("/products")
+    public ApiResponse<List<StockProductRow>> getStockProducts() {
+        return ApiResponse.success(stockRepository.findStockProducts());
+    }
 
-        return ApiResponse.success(result);
+    // 해당 상품 보유 창고 목록
+    @GetMapping("/warehouses")
+    public ApiResponse<List<StockWarehouseRow>> getStockWarehouses(
+            @RequestParam Long productId
+    ) {
+        return ApiResponse.success(stockRepository.findStockWarehouses(productId));
     }
 }

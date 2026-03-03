@@ -6,7 +6,7 @@
           <div style="display:flex; gap:8px; align-items:center;">
             <el-select v-model="warehouseId" placeholder="창고 선택" clearable style="width: 160px;">
               <el-option
-                  v-for="w in warehouseOptions"
+                  v-for="w in warehouseOptions"inbound
                   :key="w.id"
                   :label="w.name"
                   :value="w.id"
@@ -18,13 +18,13 @@
       </template>
 
       <el-table :data="rows" v-loading="loading" style="width: 100%" border>
-        <el-table-column prop="code" label="입고 코드" min-width="160" />
+        <el-table-column prop="code" label="출고 코드" min-width="160" />
         <el-table-column prop="warehouseName" label="창고" min-width="150" />
         <el-table-column prop="sectionCode" label="구역" min-width="150" />
         <el-table-column prop="palletCode" label="팔레트" min-width="130" />
         <el-table-column prop="productName" label="상품명" min-width="150" />
         <el-table-column prop="boxQty" label="수량(박스)" min-width="110" align="right" />
-        <el-table-column label="입고일시" min-width="180">
+        <el-table-column label="출고일시" min-width="180">
           <template #default="{ row }">
             {{ formatDate(row.createdAt) }}
           </template>
@@ -50,7 +50,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { fetchInbounds } from '../../api/inboundApi'
+import { fetchOutbounds } from '../../api/outboundApi'
 import { fetchWarehouses } from '../../api/warehouseApi'
 
 const router = useRouter()
@@ -78,7 +78,7 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const res = await fetchInbounds({
+    const res = await fetchOutbounds({
       warehouseId: warehouseId.value,
       page: page.value,
       size: size.value

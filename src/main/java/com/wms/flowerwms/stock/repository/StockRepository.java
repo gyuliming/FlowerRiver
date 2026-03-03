@@ -4,6 +4,8 @@ import com.wms.flowerwms.stock.domain.Stock;
 import com.wms.flowerwms.pallet.domain.Pallet;
 import com.wms.flowerwms.product.domain.Product;
 import com.wms.flowerwms.stock.query.dto.StockListRow;
+import com.wms.flowerwms.stock.query.dto.StockProductRow;
+import com.wms.flowerwms.stock.query.dto.StockWarehouseRow;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,19 +17,6 @@ import java.util.Optional;
 
 public interface StockRepository extends JpaRepository<Stock, Long> {
     Optional<Stock> findByProductAndPallet(Product product, Pallet pallet);
-
-    // 특정 상품의 재고가 있는 팔레트 목록
-    @Query("""
-    select s from Stock s
-    join fetch s.pallet p
-    where s.product.id = :productId
-    and s.section.id = :sectionId
-    and s.boxQty > 0
-    """)
-    List<Stock> findByProductIdAndSectionIdWithStock(
-            @Param("productId") Long productId,
-            @Param("sectionId") Long sectionId
-    );
 
     // FIFO : 선입선출
     @Query("""
@@ -61,4 +50,29 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
             @Param("productId") Long productId,
             Pageable pageable
     );
+
+    // 재고 있는 상품 목록
+    @Query("""
+    select new com.wms.flowerwms.stock.query.dto.StockProductRow(
+        pr.id, pr.name, sum(s.boxQty)
+    )
+    from Stock s
+    join s.product pr
+    where s.boxQty > 0
+    group by pr.id, pr.name
+    """)
+    List<StockProductRow> findStockProducts();
+
+    // 해당 상품 보유 창고 목록
+    @Query("""
+    select new com.wms.flowerwms.stock.query.dto.StockWarehouseRow(
+        w.id, w.name, sum(s.boxQty)
+    )
+    from Stock s
+    join s.warehouse w
+    where s.product.id = :productId
+    and s.boxQty > 0
+    group by w.id, w.name
+    """)
+    List<StockWarehouseRow> findStockWarehouses(@Param("productId") Long productId);
 }
