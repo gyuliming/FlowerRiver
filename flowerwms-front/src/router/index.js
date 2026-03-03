@@ -12,6 +12,9 @@ import InboundRegister from '../views/inbound/InboundRegister.vue'
 import OutboundList from '../views/outbound/OutboundList.vue'
 import OutboundRegister from '../views/outbound/OutboundRegister.vue'
 
+import StockList from '../views/stock/StockList.vue'
+import StockHistory from '../views/stock/StockHistory.vue'
+
 const routes = [
     { path: '/', redirect: '/warehouses' },
     { path: '/warehouses', component: WarehouseList, meta: { title: '창고 목록' } },
@@ -26,6 +29,9 @@ const routes = [
 
     { path: '/outbound', component: OutboundList, meta: { title: '출고 목록' } },
     { path: '/outbound/register', component: OutboundRegister, meta: { title: '출고 등록' } },
+
+    { path: '/stocks', component: StockList, meta: { title: '재고 현황' } },
+    { path: '/stocks/history', component: StockHistory, meta: { title: '재고 이력' } }
 ]
 
 export default createRouter({

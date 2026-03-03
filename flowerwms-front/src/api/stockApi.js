@@ -11,3 +11,17 @@ export function fetchStockWarehouses(productId) {
         params: { productId }
     })
 }
+
+// 재고 목록
+export function fetchStocks({ warehouseId, productId, page, size }) {
+    return http.get('/stocks', {
+        params: { warehouseId, productId, page, size }
+    })
+}
+
+// 재고 이력
+export function fetchStockHistories({ warehouseId, productId, page, size }) {
+    return http.get('/stocks/history', {
+        params: { warehouseId, productId, page, size }
+    })
+}
