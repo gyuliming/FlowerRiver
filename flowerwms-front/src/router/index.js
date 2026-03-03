@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+
+import Dashboard from "../views/dashboard/Dashboard.vue"
+
 import WarehouseList from '../views/warehouse/WarehouseList.vue'
 import WarehouseDetail from '../views/warehouse/WarehouseDetail.vue'
 import WarehouseRegister from '../views/warehouse/WarehouseRegister.vue'
@@ -16,6 +19,8 @@ import StockList from '../views/stock/StockList.vue'
 import StockHistory from '../views/stock/StockHistory.vue'
 
 const routes = [
+    { path: '/dashboard', component: Dashboard, meta: { title: '대시보드' } },
+
     { path: '/', redirect: '/warehouses' },
     { path: '/warehouses', component: WarehouseList, meta: { title: '창고 목록' } },
     { path: '/warehouses/register', component: WarehouseRegister, meta: { title: '창고 등록' } },

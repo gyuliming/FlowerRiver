@@ -7,6 +7,7 @@ import com.wms.flowerwms.section.domain.Section;
 import com.wms.flowerwms.section.domain.SectionType;
 import com.wms.flowerwms.section.repository.SectionRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
+import com.wms.flowerwms.warehouse.domain.WarehouseCodeGenerator;
 import com.wms.flowerwms.warehouse.dto.WarehouseCreateRequest;
 import com.wms.flowerwms.warehouse.dto.WarehouseUpdateRequest;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
@@ -25,13 +26,11 @@ public class WarehouseCommandService {
     private final SectionRepository sectionRepository;
     private final PalletRepository palletRepository;
     private final PalletCodeGenerator palletCodeGenerator;
+    private final WarehouseCodeGenerator warehouseCodeGenerator;
 
     // 창고 등록
     @Transactional
     public Long createWarehouse(WarehouseCreateRequest req) {
-        if (warehouseRepository.findByCode(req.getCode()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 창고 코드입니다.");
-        }
         if (warehouseRepository.findByName(req.getName()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 창고명입니다.");
         }
@@ -41,7 +40,7 @@ public class WarehouseCommandService {
 
         Warehouse warehouse = warehouseRepository.save(
                 Warehouse.builder()
-                        .code(req.getCode())
+                        .code(warehouseCodeGenerator.nextCode())
                         .name(req.getName())
                         .address(req.getAddress())
                         .build()

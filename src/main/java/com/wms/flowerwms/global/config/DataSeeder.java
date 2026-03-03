@@ -24,7 +24,6 @@ public class DataSeeder implements ApplicationRunner {
         for (int i = 1; i <= 100; i++) {
             warehouseCommandService.createWarehouse(
                     new WarehouseCreateRequest(
-                            String.format("WH-%03d", i),
                             "창고 " + i,
                             "서울시 강남구 " + i + "번길"
                     )

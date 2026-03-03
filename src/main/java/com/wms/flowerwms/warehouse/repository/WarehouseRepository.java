@@ -70,16 +70,18 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
         """)
     WarehouseDetailView findDetail(@Param("warehouseId") Long warehouseId);
 
+    // 재고 있는 창고 중 재고 많은 순으로 TOP 10까지 보여줌
     @Query("""
     select new com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow(
-        w.name,
-        coalesce(sum(s.boxQty), 0)
+        w.name, coalesce(sum(s.boxQty), 0)
     )
     from Warehouse w
     left join Stock s on s.warehouse = w and s.boxQty > 0
     where w.status = 'NORMAL'
     group by w.id, w.name
-    order by w.name asc
+    having coalesce(sum(s.boxQty), 0) > 0
+    order by coalesce(sum(s.boxQty), 0) desc
+    limit 10
     """)
     List<DashboardWarehouseUsageRow> findWarehouseUsage();
 }
