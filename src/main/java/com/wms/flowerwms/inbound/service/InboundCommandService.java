@@ -11,12 +11,17 @@ import com.wms.flowerwms.product.repository.ProductRepository;
 import com.wms.flowerwms.section.domain.Section;
 import com.wms.flowerwms.section.repository.SectionRepository;
 import com.wms.flowerwms.stock.domain.Stock;
+import com.wms.flowerwms.stock.domain.StockHistory;
+import com.wms.flowerwms.stock.domain.StockHistoryType;
+import com.wms.flowerwms.stock.repository.StockHistoryRepository;
 import com.wms.flowerwms.stock.repository.StockRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +34,7 @@ public class InboundCommandService {
     private final SectionRepository sectionRepository;
     private final ProductRepository productRepository;
     private final StockRepository stockRepository;
+    private final StockHistoryRepository stockHistoryRepository;
 
     @Transactional
     public Long createInbound(InboundCreateRequest req) {
@@ -66,10 +72,19 @@ public class InboundCommandService {
                         .pallet(pallet)
                         .product(product)
                         .boxQty(0)
+                        .inboundAt(LocalDateTime.now())
                         .build());
 
         stock.add(req.getBoxQty());
         stockRepository.save(stock);
+
+        // 재고 이력 저장
+        stockHistoryRepository.save(StockHistory.builder()
+                .warehouse(warehouse)
+                .product(product)
+                .type(StockHistoryType.INBOUND)
+                .boxQty(req.getBoxQty())
+                .build());
 
         // 입고 이력 저장
         Inbound inbound = Inbound.builder()
