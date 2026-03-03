@@ -7,6 +7,8 @@ import com.wms.flowerwms.warehouse.domain.Warehouse;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "stock", indexes = {
         @Index(name = "idx_stock_product_id", columnList = "product_id"),
@@ -40,6 +42,9 @@ public class Stock {
 
     @Column(nullable = false)
     private int boxQty;
+
+    @Column(nullable = false)
+    private LocalDateTime inboundAt;
 
     public void add(int qty) {
         this.boxQty += qty;

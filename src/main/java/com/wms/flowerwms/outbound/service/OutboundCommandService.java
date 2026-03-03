@@ -4,13 +4,12 @@ import com.wms.flowerwms.outbound.domain.Outbound;
 import com.wms.flowerwms.outbound.domain.OutboundCodeGenerator;
 import com.wms.flowerwms.outbound.dto.OutboundCreateRequest;
 import com.wms.flowerwms.outbound.repository.OutboundRepository;
-import com.wms.flowerwms.pallet.domain.Pallet;
-import com.wms.flowerwms.pallet.repository.PalletRepository;
 import com.wms.flowerwms.product.domain.Product;
 import com.wms.flowerwms.product.repository.ProductRepository;
-import com.wms.flowerwms.section.domain.Section;
-import com.wms.flowerwms.section.repository.SectionRepository;
 import com.wms.flowerwms.stock.domain.Stock;
+import com.wms.flowerwms.stock.domain.StockHistory;
+import com.wms.flowerwms.stock.domain.StockHistoryType;
+import com.wms.flowerwms.stock.repository.StockHistoryRepository;
 import com.wms.flowerwms.stock.repository.StockRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
@@ -18,53 +17,70 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OutboundCommandService {
 
     private final OutboundRepository outboundRepository;
     private final WarehouseRepository warehouseRepository;
-    private final SectionRepository sectionRepository;
-    private final PalletRepository palletRepository;
     private final ProductRepository productRepository;
-    private final OutboundCodeGenerator outboundCodeGenerator;
     private final StockRepository stockRepository;
+    private final StockHistoryRepository stockHistoryRepository;
+    private final OutboundCodeGenerator outboundCodeGenerator;
 
     @Transactional
     public Long createOutbound(OutboundCreateRequest req) {
-
         Warehouse warehouse = warehouseRepository.findById(req.getWarehouseId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다."));
-
-        Section section = sectionRepository.findById(req.getSectionId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 구역입니다."));
-
-        Pallet pallet = palletRepository.findById(req.getPalletId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팔레트입니다."));
 
         Product product = productRepository.findById(req.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-        // 재고 확인
-        Stock stock = stockRepository.findByProductAndPallet(product, pallet)
-                .orElseThrow(() -> new IllegalArgumentException("해당 팔레트에 재고가 없습니다."));
+        // FIFO로 재고 있는 팔레트 목록 조회
+        List<Stock> stocks = stockRepository
+                .findByProductAndWarehouseOrderByInboundAtAsc(req.getProductId(), req.getWarehouseId());
 
-        // 재고 감소 (stock.subtract 내부에서 부족하면 예외 발생)
-        stock.subtract(req.getBoxQty());
+        // 전체 재고 확인
+        int totalStock = stocks.stream().mapToInt(Stock::getBoxQty).sum();
+        if (req.getBoxQty() > totalStock) {
+            throw new IllegalArgumentException("재고가 부족합니다. 현재 재고: " + totalStock + " 박스");
+        }
 
-        // 팔레트 사용량 감소
-        pallet.subtractUsedBoxQty(req.getBoxQty());
+        // FIFO 출고 처리
+        int remaining = req.getBoxQty();
+        List<Outbound> outbounds = new ArrayList<>();
 
-        // 출고 이력 저장
-        Outbound outbound = Outbound.builder()
-                .code(outboundCodeGenerator.nextCode())
+        for (Stock stock : stocks) {
+            if (remaining <= 0) break;
+
+            int deduct = Math.min(remaining, stock.getBoxQty());
+            stock.subtract(deduct);
+            stock.getPallet().subtractUsedBoxQty(deduct);
+            remaining -= deduct;
+
+            outbounds.add(Outbound.builder()
+                    .code(outboundCodeGenerator.nextCode())
+                    .warehouse(warehouse)
+                    .section(stock.getSection())
+                    .pallet(stock.getPallet())
+                    .product(product)
+                    .boxQty(deduct)
+                    .build());
+        }
+
+        outboundRepository.saveAll(outbounds);
+
+        // 재고 이력 저장
+        stockHistoryRepository.save(StockHistory.builder()
                 .warehouse(warehouse)
-                .section(section)
-                .pallet(pallet)
                 .product(product)
+                .type(StockHistoryType.OUTBOUND)
                 .boxQty(req.getBoxQty())
-                .build();
+                .build());
 
-        return outboundRepository.save(outbound).getId();
+        return outbounds.get(0).getId();
     }
 }

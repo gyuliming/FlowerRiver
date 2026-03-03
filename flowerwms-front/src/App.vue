@@ -37,10 +37,10 @@
         </el-sub-menu>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 
-        <el-sub-menu index="inventory">
+        <el-sub-menu index="stock">
           <template #title>재고 관리</template>
-          <el-menu-item index="/inventory">재고 목록</el-menu-item>
-          <el-menu-item index="/inventory/history">재고 이력</el-menu-item>
+          <el-menu-item index="/stocks">재고 목록</el-menu-item>
+          <el-menu-item index="/stocks/history">재고 이력</el-menu-item>
         </el-sub-menu>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 
