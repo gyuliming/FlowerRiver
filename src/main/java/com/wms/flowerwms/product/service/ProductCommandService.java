@@ -18,6 +18,10 @@ public class ProductCommandService {
 
     @Transactional
     public Long createProduct(ProductCreateRequest req) {
+        if (productRepository.existsByName(req.getName())) {
+            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+        }
+
         SectionType storageType = Product.resolveStorageType(req.getType());
 
         Product product = Product.builder()

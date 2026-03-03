@@ -33,7 +33,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Query("""
     select new com.wms.flowerwms.stock.query.dto.StockListRow(
-        s.id, w.name, sec.code, p.code, pr.name, s.boxQty, s.inboundAt
+        s.id, w.name, sec.code, p.code, pr.name, pr.type, pr.storageType, s.boxQty
     )
     from Stock s
     join s.warehouse w
