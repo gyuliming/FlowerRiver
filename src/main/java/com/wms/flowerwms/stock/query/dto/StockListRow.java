@@ -1,5 +1,7 @@
 package com.wms.flowerwms.stock.query.dto;
 
+import com.wms.flowerwms.product.domain.FlowerType;
+import com.wms.flowerwms.section.domain.SectionType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,6 +15,7 @@ public class StockListRow {
     private String sectionCode;
     private String palletCode;
     private String productName;
+    private FlowerType productType;
+    private SectionType storageType;
     private int boxQty;
-    private LocalDateTime inboundAt;
 }

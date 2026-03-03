@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByCode(String code);
 
+    boolean existsByName(String name);
+
     @Query("""
     select new com.wms.flowerwms.product.query.dto.ProductListRow(
         p.id, p.code, p.name, p.type, p.storageType,
