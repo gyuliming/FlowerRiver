@@ -75,4 +75,7 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     group by w.id, w.name
     """)
     List<StockWarehouseRow> findStockWarehouses(@Param("productId") Long productId);
+
+    @Query("select coalesce(sum(s.boxQty), 0) from Stock s where s.boxQty > 0")
+    long sumTotalStockBox();
 }
