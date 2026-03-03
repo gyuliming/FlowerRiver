@@ -12,15 +12,14 @@
     "@element-plus/icons-vue": "^2.3.2",
     "axios": "^1.13.6",
     "bootstrap": "^5.3.8",
+    "echarts": "^6.0.0",
+    "echarts.js": "^3.0.0-beta3",
     "element-plus": "^2.13.3",
     "vue": "^3.5.25",
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.2",
-    "vite": "^8.0.0-beta.13"
-  },
-  "overrides": {
-    "vite": "^8.0.0-beta.13"
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0"
   }
 }

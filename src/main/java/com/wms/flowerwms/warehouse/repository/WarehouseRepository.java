@@ -1,5 +1,6 @@
 package com.wms.flowerwms.warehouse.repository;
 
+import com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.domain.WarehouseStatus;
 import com.wms.flowerwms.warehouse.query.dto.WarehouseDetailView;
@@ -10,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
@@ -22,6 +24,8 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
     // 주소로 창고 찾기(중복 확인용)
     Optional<Warehouse> findByAddress(String address);
+
+    long countByStatus(WarehouseStatus status);
 
     // 창고 목록 페이징 검색
     @Query("""
@@ -65,4 +69,19 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
         group by w.id, w.code, w.name, w.address, w.status
         """)
     WarehouseDetailView findDetail(@Param("warehouseId") Long warehouseId);
+
+    // 재고 있는 창고 중 재고 많은 순으로 TOP 10까지 보여줌
+    @Query("""
+    select new com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow(
+        w.name, coalesce(sum(s.boxQty), 0)
+    )
+    from Warehouse w
+    left join Stock s on s.warehouse = w and s.boxQty > 0
+    where w.status = 'NORMAL'
+    group by w.id, w.name
+    having coalesce(sum(s.boxQty), 0) > 0
+    order by coalesce(sum(s.boxQty), 0) desc
+    limit 10
+    """)
+    List<DashboardWarehouseUsageRow> findWarehouseUsage();
 }

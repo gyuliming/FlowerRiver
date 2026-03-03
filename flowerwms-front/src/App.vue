@@ -1,12 +1,12 @@
 <template>
   <el-container style="min-height: 100vh">
     <el-aside width="220px" style="border-right: 1px solid #eee; background-color: #404F7B;">
-      <div style="padding:0; text-align:center;">
+      <div style="padding:0; text-align:center; cursor:pointer;" @click="$router.push('/dashboard')">
         <img :src="logo" style="width: 220px; display:block;" />
       </div>
       <el-divider style="margin: 1px 0; border-color: #D5B270;" />
       <el-menu router :default-active="$route.path" background-color="#42507C" text-color="#D5B270" active-text-color="#ffffff">
-        <el-menu-item index="dashboard">
+        <el-menu-item index="/dashboard">
           <template #title>대시보드</template>
         </el-menu-item>
         <el-divider style="margin: 1px 0; border-color: #D5B270;" />

@@ -7,9 +7,6 @@
       </template>
 
       <el-form :model="form" :rules="rules" ref="formRef" label-width="100px" style="max-width: 600px;" hide-required-asterisk>
-        <el-form-item label="창고 코드" prop="code">
-          <el-input v-model="form.code" placeholder="예) WH-001" />
-        </el-form-item>
         <el-form-item label="창고명" prop="name">
           <el-input v-model="form.name" placeholder="예) 강남 창고" />
         </el-form-item>
@@ -55,7 +52,6 @@ const form = ref({
 })
 
 const rules = {
-  code: [{ required: true, message: '창고 코드를 입력해주세요.', trigger: 'blur' }],
   name: [{ required: true, message: '창고명을 입력해주세요.', trigger: 'blur' }],
   address: [{ required: true, message: '주소를 입력해주세요.', trigger: 'blur' }]
 }

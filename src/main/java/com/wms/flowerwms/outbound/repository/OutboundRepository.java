@@ -8,8 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+
 public interface OutboundRepository extends JpaRepository<Outbound, Long> {
     long countByCodeStartingWith(String prefix);
+
+    long countByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     @Query("""
     select new com.wms.flowerwms.outbound.query.dto.OutboundListRow(
@@ -27,4 +31,7 @@ public interface OutboundRepository extends JpaRepository<Outbound, Long> {
             @Param("warehouseId") Long warehouseId,
             Pageable pageable
     );
+
+    @Query("select coalesce(sum(o.boxQty), 0) from Outbound o where o.createdAt between :start and :end")
+    long sumBoxQtyByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }
