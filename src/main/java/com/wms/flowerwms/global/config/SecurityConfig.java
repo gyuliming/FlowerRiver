@@ -46,15 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/members/*/approve").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/members/*/reject").hasRole("ADMIN")
 
-                        // ADMIN, MANAGER 모두 가능
-                        .requestMatchers(HttpMethod.GET, "/api/warehouses/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").authenticated()
-                        .requestMatchers("/api/inbound/**").authenticated()
-                        .requestMatchers("/api/outbound/**").authenticated()
-                        .requestMatchers("/api/stocks/**").authenticated()
-                        .requestMatchers("/api/dashboard/**").authenticated()
-
-                        .anyRequest().authenticated()
+                        .anyRequest().hasAnyRole("ADMIN", "MANAGER")
                 )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider),
