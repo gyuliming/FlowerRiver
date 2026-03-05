@@ -19,7 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByRole(MemberRole role);
     Optional<Member> findByLoginId(String loginId);
     boolean existsByWarehouse(Warehouse warehouse);
-    List<Member> findAllByStatus(MemberStatus status);
 
     @Query("""
     select new com.wms.flowerwms.member.query.dto.MemberListRow(
@@ -29,11 +28,24 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         m.createdAt
     )
     from Member m
-    where (:status is null or m.status = :status)
+    left join m.warehouse
+    where m.role != 'ADMIN'
+    and m.status = :status
     order by m.createdAt desc
     """)
-    Page<MemberListRow> searchMembers(
-            @Param("status") MemberStatus status,
-            Pageable pageable
-    );
+    Page<MemberListRow> findAllMembersByStatus(@Param("status") MemberStatus status, Pageable pageable);
+
+    @Query("""
+    select new com.wms.flowerwms.member.query.dto.MemberListRow(
+        m.id, m.loginId, m.name, m.phone, m.email,
+        m.role, m.status,
+        case when m.warehouse is null then null else m.warehouse.name end,
+        m.createdAt
+    )
+    from Member m
+    left join m.warehouse
+    where m.role != 'ADMIN'
+    order by m.createdAt desc
+    """)
+    Page<MemberListRow> findAllMembers(Pageable pageable);
 }
