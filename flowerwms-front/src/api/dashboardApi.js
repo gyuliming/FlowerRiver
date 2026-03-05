@@ -15,3 +15,7 @@ export function fetchRecentInbound() {
 export function fetchRecentOutbound() {
     return http.get('/dashboard/recent-outbound')
 }
+
+export function fetchProductStock() {
+    return http.get('/dashboard/product-stock')
+}

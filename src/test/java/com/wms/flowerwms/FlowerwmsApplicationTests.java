@@ -2,6 +2,7 @@ package com.wms.flowerwms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootTest
 class FlowerwmsApplicationTests {
@@ -10,4 +11,9 @@ class FlowerwmsApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void generatePassword() {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		System.out.println(encoder.encode("password123"));
+	}
 }

@@ -32,6 +32,9 @@ public interface InboundRepository extends JpaRepository<Inbound, Long> {
             Pageable pageable
     );
 
-    @Query("select coalesce(sum(i.boxQty), 0) from Inbound i where i.createdAt between :start and :end")
-    long sumBoxQtyByCreatedAtBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    @Query("select count(i) from Inbound i where i.createdAt between :start and :end and (:warehouseId is null or i.warehouse.id = :warehouseId)")
+    long countByWarehouseAndCreatedAtBetween(@Param("warehouseId") Long warehouseId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("select coalesce(sum(i.boxQty), 0) from Inbound i where i.createdAt between :start and :end and (:warehouseId is null or i.warehouse.id = :warehouseId)")
+    long sumBoxQtyByWarehouseAndCreatedAtBetween(@Param("warehouseId") Long warehouseId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

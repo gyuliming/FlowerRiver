@@ -1,5 +1,6 @@
 package com.wms.flowerwms.dashboard.controller;
 
+import com.wms.flowerwms.dashboard.dto.DashboardProductStockRow;
 import com.wms.flowerwms.dashboard.dto.DashboardSummaryResponse;
 import com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow;
 import com.wms.flowerwms.dashboard.service.DashboardService;
@@ -36,5 +37,11 @@ public class DashboardController {
     @GetMapping("/recent-outbound")
     public ApiResponse<List<OutboundListRow>> getRecentOutbound() {
         return ApiResponse.success(dashboardService.getRecentOutbound());
+    }
+
+    // 상품별 재고 현황 (MANAGER)
+    @GetMapping("/product-stock")
+    public ApiResponse<List<DashboardProductStockRow>> getProductStock() {
+        return ApiResponse.success(dashboardService.getProductStock());
     }
 }

@@ -2,48 +2,66 @@
   <div>
     <!-- 상단 4카드 -->
     <el-row :gutter="16" style="margin-bottom:16px;">
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <div style="text-align:center;">
-            <div style="font-size:14px; color:#999; margin-bottom:8px;">전체 창고 수</div>
-            <div style="font-size:32px; font-weight:700; color:#404F7B;">{{ summary.totalWarehouses }}</div>
-            <div style="font-size:12px; color:#999;">개</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <div style="text-align:center;">
-            <div style="font-size:14px; color:#999; margin-bottom:8px;">현재 총 재고</div>
-            <div style="font-size:32px; font-weight:700; color:#404F7B;">{{ summary.totalStockBox }}</div>
-            <div style="font-size:12px; color:#999;">박스</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <div style="text-align:center;">
-            <div style="font-size:14px; color:#999; margin-bottom:8px;">오늘 입고</div>
-            <div style="font-size:32px; font-weight:700; color:#67C23A;">{{ summary.todayInboundCount }}</div>
-            <div style="font-size:12px; color:#999;">건 / {{ summary.todayInboundBox }} 박스</div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="6">
-        <el-card shadow="hover">
-          <div style="text-align:center;">
-            <div style="font-size:14px; color:#999; margin-bottom:8px;">오늘 출고</div>
-            <div style="font-size:32px; font-weight:700; color:#F56C6C;">{{ summary.todayOutboundCount }}</div>
-            <div style="font-size:12px; color:#999;">건 / {{ summary.todayOutboundBox }} 박스</div>
-          </div>
-        </el-card>
-      </el-col>
+      <!-- ADMIN -->
+      <template v-if="isAdmin()">
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">전체 창고 수</div>
+              <div style="font-size:32px; font-weight:700; color:#404F7B;">{{ summary.totalWarehouses }}</div>
+              <div style="font-size:12px; color:#999;">개</div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">현재 총 재고</div>
+              <div style="font-size:32px; font-weight:700; color:#404F7B;">{{ summary.totalStockBox }}</div>
+              <div style="font-size:12px; color:#999;">박스</div>
+            </div>
+          </el-card>
+        </el-col>
+      </template>
+
+      <!-- MANAGER -->
+      <template v-else>
+        <el-col :span="8">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">내 창고 총 재고</div>
+              <div style="font-size:32px; font-weight:700; color:#404F7B;">{{ summary.totalStockBox }}</div>
+              <div style="font-size:12px; color:#999;">박스</div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">오늘 입고</div>
+              <div style="font-size:32px; font-weight:700; color:#67C23A;">{{ summary.todayInboundCount }}</div>
+              <div style="font-size:12px; color:#999;">건 / {{ summary.todayInboundBox }} 박스</div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="8">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">오늘 출고</div>
+              <div style="font-size:32px; font-weight:700; color:#F56C6C;">{{ summary.todayOutboundCount }}</div>
+              <div style="font-size:12px; color:#999;">건 / {{ summary.todayOutboundBox }} 박스</div>
+            </div>
+          </el-card>
+        </el-col>
+      </template>
     </el-row>
 
-    <!-- 창고별 재고 차트 -->
+    <!-- 차트 -->
     <el-card style="margin-bottom:16px;">
       <template #header>
-        <span style="font-weight:600;">창고별 재고 현황 (TOP 10)</span>
+        <span style="font-weight:600;">
+          {{ isAdmin() ? '창고별 재고 현황 (TOP 10)' : '상품별 재고 현황 (TOP 10)' }}
+        </span>
       </template>
       <div ref="chartRef" style="width:100%; height:300px;" />
     </el-card>
@@ -83,12 +101,16 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import * as echarts from 'echarts'
+import { useAuth } from '../../stores/auth'
 import {
   fetchDashboardSummary,
   fetchWarehouseUsage,
   fetchRecentInbound,
-  fetchRecentOutbound
+  fetchRecentOutbound,
+  fetchProductStock
 } from '../../api/dashboardApi'
+
+const { isAdmin } = useAuth()
 
 const summary = ref({
   totalWarehouses: 0,
@@ -103,28 +125,27 @@ const recentInbound = ref([])
 const recentOutbound = ref([])
 const chartRef = ref(null)
 
-function renderChart(data) {
+function renderChart(data, labelKey, valueKey) {
   const chart = echarts.init(chartRef.value)
   chart.setOption({
     tooltip: { trigger: 'axis' },
     xAxis: {
       type: 'category',
-      data: data.map(d => d.warehouseName)
+      data: data.map(d => d[labelKey])
     },
     yAxis: { type: 'value', name: '박스' },
     series: [{
       name: '재고(박스)',
       type: 'bar',
-      data: data.map(d => d.totalStockBox),
+      data: data.map(d => d[valueKey]),
       itemStyle: { color: '#404F7B' }
     }]
   })
 }
 
 onMounted(async () => {
-  const [summaryRes, usageRes, inboundRes, outboundRes] = await Promise.all([
+  const [summaryRes, inboundRes, outboundRes] = await Promise.all([
     fetchDashboardSummary(),
-    fetchWarehouseUsage(),
     fetchRecentInbound(),
     fetchRecentOutbound()
   ])
@@ -132,6 +153,15 @@ onMounted(async () => {
   summary.value = summaryRes.data.data
   recentInbound.value = inboundRes.data.data
   recentOutbound.value = outboundRes.data.data
-  renderChart(usageRes.data.data)
+
+  if (isAdmin()) {
+    const usageRes = await fetchWarehouseUsage()
+    renderChart(usageRes.data.data, 'warehouseName', 'totalStockBox')
+  } else {
+    const [productRes] = await Promise.all([
+      fetchProductStock()
+    ])
+    renderChart(productRes.data.data, 'productName', 'boxQty')
+  }
 })
 </script>

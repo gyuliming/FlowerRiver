@@ -61,6 +61,7 @@ import { ElMessage } from 'element-plus'
 import { createInbound } from '../../api/inboundApi'
 import { fetchWarehouses, fetchWarehouseDetail, fetchPallets } from '../../api/warehouseApi'
 import { fetchProducts } from '../../api/productApi'
+import { useAuth } from '../../stores/auth'
 
 const router = useRouter()
 const formRef = ref(null)
@@ -87,6 +88,31 @@ const rules = {
   palletId: [{ required: true, message: '팔레트를 선택해주세요.', trigger: 'change' }],
   boxQty: [{ required: true, message: '수량을 입력해주세요.', trigger: 'blur' }]
 }
+
+
+const { state, isAdmin } = useAuth()
+
+onMounted(async () => {
+  const [productRes, warehouseRes] = await Promise.all([
+    fetchProducts({ page: 1, size: 100 }),
+    fetchWarehouses({ page: 1, size: 100 })
+  ])
+  productOptions.value = productRes.data.data.items
+
+  const allWarehouses = warehouseRes.data.data.items.filter(w => w.status === 'NORMAL')
+
+  if (isAdmin()) {
+    warehouseOptions.value = allWarehouses
+  } else {
+    // MANAGER 는 자기 창고만
+    warehouseOptions.value = allWarehouses.filter(w => w.id === Number(state.warehouseId))
+    // 자동 선택
+    if (warehouseOptions.value.length === 1) {
+      form.value.warehouseId = warehouseOptions.value[0].id
+      await onWarehouseChange(form.value.warehouseId)
+    }
+  }
+})
 
 function onProductChange(id) {
   selectedProduct.value = productOptions.value.find(p => p.id === id)
@@ -131,13 +157,4 @@ async function submit() {
 function goBack() {
   router.push('/inbound')
 }
-
-onMounted(async () => {
-  const [productRes, warehouseRes] = await Promise.all([
-    fetchProducts({ page: 1, size: 100 }),
-    fetchWarehouses({ page: 1, size: 100 })
-  ])
-  productOptions.value = productRes.data.data.items
-  warehouseOptions.value = warehouseRes.data.data.items.filter(w => w.status === 'NORMAL')
-})
 </script>
