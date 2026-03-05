@@ -1,6 +1,7 @@
 package com.wms.flowerwms.outbound.query.service;
 
 import com.wms.flowerwms.global.paging.PageResponse;
+import com.wms.flowerwms.global.security.SecurityUtil;
 import com.wms.flowerwms.outbound.query.dto.OutboundListRow;
 import com.wms.flowerwms.outbound.repository.OutboundRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,10 @@ public class OutboundQueryService {
         int p = (page == null || page < 1) ? 1 : page;
         int s = (size == null || size < 1 || size > 100) ? 10 : size;
 
+        Long filterWarehouseId = SecurityUtil.isAdmin() ? warehouseId : SecurityUtil.getCurrentWarehouseId();
+
         Page<OutboundListRow> result = outboundRepository.searchOutbounds(
-                warehouseId,
+                filterWarehouseId,
                 PageRequest.of(p - 1, s)
         );
 

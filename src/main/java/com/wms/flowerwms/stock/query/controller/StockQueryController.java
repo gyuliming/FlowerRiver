@@ -2,6 +2,7 @@ package com.wms.flowerwms.stock.query.controller;
 
 import com.wms.flowerwms.global.response.ApiResponse;
 import com.wms.flowerwms.global.paging.PageResponse;
+import com.wms.flowerwms.global.security.SecurityUtil;
 import com.wms.flowerwms.stock.query.dto.StockHistoryRow;
 import com.wms.flowerwms.stock.query.dto.StockListRow;
 import com.wms.flowerwms.stock.query.dto.StockProductRow;
@@ -46,7 +47,8 @@ public class StockQueryController {
     // 재고 있는 상품 목록
     @GetMapping("/products")
     public ApiResponse<List<StockProductRow>> getStockProducts() {
-        return ApiResponse.success(stockRepository.findStockProducts());
+        Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
+        return ApiResponse.success(stockRepository.findStockProducts(warehouseId));
     }
 
     // 해당 상품 보유 창고 목록
@@ -54,6 +56,7 @@ public class StockQueryController {
     public ApiResponse<List<StockWarehouseRow>> getStockWarehouses(
             @RequestParam Long productId
     ) {
-        return ApiResponse.success(stockRepository.findStockWarehouses(productId));
+        Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
+        return ApiResponse.success(stockRepository.findStockWarehouses(productId, warehouseId));
     }
 }

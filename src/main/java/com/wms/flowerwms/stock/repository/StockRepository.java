@@ -1,5 +1,6 @@
 package com.wms.flowerwms.stock.repository;
 
+import com.wms.flowerwms.dashboard.dto.DashboardProductStockRow;
 import com.wms.flowerwms.stock.domain.Stock;
 import com.wms.flowerwms.pallet.domain.Pallet;
 import com.wms.flowerwms.product.domain.Product;
@@ -16,9 +17,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface StockRepository extends JpaRepository<Stock, Long> {
+
     Optional<Stock> findByProductAndPallet(Product product, Pallet pallet);
 
-    // FIFO : 선입선출
     @Query("""
     select s from Stock s
     where s.product.id = :productId
@@ -51,7 +52,6 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
             Pageable pageable
     );
 
-    // 재고 있는 상품 목록
     @Query("""
     select new com.wms.flowerwms.stock.query.dto.StockProductRow(
         pr.id, pr.name, sum(s.boxQty)
@@ -59,11 +59,11 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     from Stock s
     join s.product pr
     where s.boxQty > 0
+    and (:warehouseId is null or s.warehouse.id = :warehouseId)
     group by pr.id, pr.name
     """)
-    List<StockProductRow> findStockProducts();
+    List<StockProductRow> findStockProducts(@Param("warehouseId") Long warehouseId);
 
-    // 해당 상품 보유 창고 목록
     @Query("""
     select new com.wms.flowerwms.stock.query.dto.StockWarehouseRow(
         w.id, w.name, sum(s.boxQty)
@@ -72,10 +72,24 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
     join s.warehouse w
     where s.product.id = :productId
     and s.boxQty > 0
+    and (:warehouseId is null or s.warehouse.id = :warehouseId)
     group by w.id, w.name
     """)
-    List<StockWarehouseRow> findStockWarehouses(@Param("productId") Long productId);
+    List<StockWarehouseRow> findStockWarehouses(@Param("productId") Long productId, @Param("warehouseId") Long warehouseId);
 
-    @Query("select coalesce(sum(s.boxQty), 0) from Stock s where s.boxQty > 0")
-    long sumTotalStockBox();
+    @Query("select coalesce(sum(s.boxQty), 0) from Stock s where s.boxQty > 0 and (:warehouseId is null or s.warehouse.id = :warehouseId)")
+    long sumTotalStockBoxByWarehouse(@Param("warehouseId") Long warehouseId);
+
+    @Query("""
+    select new com.wms.flowerwms.dashboard.dto.DashboardProductStockRow(
+        pr.name, sum(s.boxQty)
+    )
+    from Stock s
+    join s.product pr
+    where s.warehouse.id = :warehouseId
+    and s.boxQty > 0
+    group by pr.id, pr.name
+    order by sum(s.boxQty) desc
+    """)
+    List<DashboardProductStockRow> findProductStockByWarehouse(@Param("warehouseId") Long warehouseId);
 }
