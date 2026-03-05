@@ -1,8 +1,8 @@
 import http from './http.js'
 
 // 재고 있는 상품 목록
-export function fetchStockProducts() {
-    return http.get('/stocks/products')
+export function fetchStockProducts(warehouseId = null) {
+    return http.get('/stocks/products', { params: { warehouseId } })
 }
 
 // 해당 상품 보유 창고 목록

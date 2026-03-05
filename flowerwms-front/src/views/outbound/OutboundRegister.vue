@@ -42,6 +42,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { createOutbound } from '../../api/outboundApi'
 import { fetchStockProducts, fetchStockWarehouses } from '../../api/stockApi'
+import { useAuth } from '../../stores/auth'
 
 const router = useRouter()
 const formRef = ref(null)
@@ -63,14 +64,41 @@ const rules = {
   boxQty: [{ required: true, message: '수량을 입력해주세요.', trigger: 'blur' }]
 }
 
+const { state, isAdmin } = useAuth()
+
 async function onProductChange(id) {
   form.value.warehouseId = null
   selectedWarehouseStock.value = 0
   warehouseOptions.value = []
 
   const res = await fetchStockWarehouses(id)
-  warehouseOptions.value = res.data.data
+  let warehouses = res.data.data
+
+  // MANAGER 는 자기 창고만
+  if (!isAdmin()) {
+    warehouses = warehouses.filter(w => w.id === Number(state.warehouseId))
+    if (warehouses.length === 1) {
+      form.value.warehouseId = warehouses[0].id
+      onWarehouseChange(warehouses[0].id)
+    }
+  }
+
+  warehouseOptions.value = warehouses
 }
+
+onMounted(async () => {
+  const res = await fetchStockProducts()
+  let products = res.data.data
+
+  // MANAGER 는 자기 창고 재고 있는 상품만
+  if (!isAdmin()) {
+    const warehouseRes = await fetchStockWarehouses(null)
+    // 자기 창고 재고 있는 상품만 필터
+    products = products.filter(p => p.warehouseIds?.includes(Number(state.warehouseId)))
+  }
+
+  productOptions.value = products
+})
 
 function onWarehouseChange(id) {
   const selected = warehouseOptions.value.find(w => w.id === id)
@@ -96,7 +124,8 @@ function goBack() {
 }
 
 onMounted(async () => {
-  const res = await fetchStockProducts()
+  const warehouseId = isAdmin() ? null : state.warehouseId
+  const res = await fetchStockProducts(warehouseId)
   productOptions.value = res.data.data
 })
 </script>

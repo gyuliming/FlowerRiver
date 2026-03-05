@@ -1,11 +1,14 @@
 package com.wms.flowerwms.dashboard.service;
 
+import com.wms.flowerwms.dashboard.dto.DashboardProductStockRow;
 import com.wms.flowerwms.dashboard.dto.DashboardSummaryResponse;
 import com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow;
+import com.wms.flowerwms.global.security.SecurityUtil;
 import com.wms.flowerwms.inbound.query.dto.InboundListRow;
 import com.wms.flowerwms.inbound.repository.InboundRepository;
 import com.wms.flowerwms.outbound.query.dto.OutboundListRow;
 import com.wms.flowerwms.outbound.repository.OutboundRepository;
+import com.wms.flowerwms.pallet.repository.PalletRepository;
 import com.wms.flowerwms.stock.repository.StockRepository;
 import com.wms.flowerwms.warehouse.domain.WarehouseStatus;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
@@ -26,18 +29,23 @@ public class DashboardService {
     private final StockRepository stockRepository;
     private final InboundRepository inboundRepository;
     private final OutboundRepository outboundRepository;
+    private final PalletRepository palletRepository;
 
     @Transactional(readOnly = true)
     public DashboardSummaryResponse getSummary() {
         LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
         LocalDateTime endOfDay = startOfDay.plusDays(1);
 
-        long totalWarehouses = warehouseRepository.countByStatus(WarehouseStatus.NORMAL);
-        long totalStockBox = stockRepository.sumTotalStockBox();
-        long todayInboundCount = inboundRepository.countByCreatedAtBetween(startOfDay, endOfDay);
-        long todayInboundBox = inboundRepository.sumBoxQtyByCreatedAtBetween(startOfDay, endOfDay);
-        long todayOutboundCount = outboundRepository.countByCreatedAtBetween(startOfDay, endOfDay);
-        long todayOutboundBox = outboundRepository.sumBoxQtyByCreatedAtBetween(startOfDay, endOfDay);
+        Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
+
+        long totalWarehouses = SecurityUtil.isAdmin()
+                ? warehouseRepository.countByStatus(WarehouseStatus.NORMAL)
+                : 1L;
+        long totalStockBox = stockRepository.sumTotalStockBoxByWarehouse(warehouseId);
+        long todayInboundCount = inboundRepository.countByWarehouseAndCreatedAtBetween(warehouseId, startOfDay, endOfDay);
+        long todayInboundBox = inboundRepository.sumBoxQtyByWarehouseAndCreatedAtBetween(warehouseId, startOfDay, endOfDay);
+        long todayOutboundCount = outboundRepository.countByWarehouseAndCreatedAtBetween(warehouseId, startOfDay, endOfDay);
+        long todayOutboundBox = outboundRepository.sumBoxQtyByWarehouseAndCreatedAtBetween(warehouseId, startOfDay, endOfDay);
 
         return new DashboardSummaryResponse(
                 totalWarehouses, totalStockBox,
@@ -48,16 +56,25 @@ public class DashboardService {
 
     @Transactional(readOnly = true)
     public List<DashboardWarehouseUsageRow> getWarehouseUsage() {
-        return warehouseRepository.findWarehouseUsage();
+        Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
+        return warehouseRepository.findWarehouseUsage(warehouseId);
     }
 
     @Transactional(readOnly = true)
     public List<InboundListRow> getRecentInbound() {
-        return inboundRepository.searchInbounds(null, PageRequest.of(0, 5)).getContent();
+        Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
+        return inboundRepository.searchInbounds(warehouseId, PageRequest.of(0, 5)).getContent();
     }
 
     @Transactional(readOnly = true)
     public List<OutboundListRow> getRecentOutbound() {
-        return outboundRepository.searchOutbounds(null, PageRequest.of(0, 5)).getContent();
+        Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
+        return outboundRepository.searchOutbounds(warehouseId, PageRequest.of(0, 5)).getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<DashboardProductStockRow> getProductStock() {
+        Long warehouseId = SecurityUtil.getCurrentWarehouseId();
+        return stockRepository.findProductStockByWarehouse(warehouseId);
     }
 }
