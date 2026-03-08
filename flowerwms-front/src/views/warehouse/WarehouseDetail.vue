@@ -5,7 +5,7 @@
       <template #header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span style="font-weight: 600;">창고 정보</span>
-          <div style="display:flex; gap:8px;">
+          <div v-if="isAdmin()" style="display:flex; gap:8px;">
             <el-button type="primary" @click="openEditModal" :disabled="warehouse.status === 'CLOSED'">수정</el-button>
             <el-button type="danger" @click="confirmClose" :disabled="warehouse.status === 'CLOSED'">폐쇄</el-button>
           </div>
@@ -86,8 +86,11 @@
 import { onMounted, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {closeWarehouse, fetchWarehouseDetail, updateWarehouse} from '../../api/warehouseApi.js'
+import { useAuth } from '../../stores/auth.js'
 
 const props = defineProps({ id: String })
+
+const { isAdmin } = useAuth()
 
 const warehouse = ref({
   code: '',
@@ -108,12 +111,22 @@ function usageRate(used, total) {
 }
 
 function openEditModal() {
+  if (!isAdmin()) {
+    ElMessage.error('권한이 없습니다.')
+    return
+  }
+
   editForm.value.name = warehouse.value.name
   editForm.value.address = warehouse.value.address
   editModal.value = true
 }
 
 async function submitEdit() {
+  if (!isAdmin()) {
+    ElMessage.error('권한이 없습니다.')
+    return
+  }
+
   try {
     await updateWarehouse(props.id, editForm.value)
     ElMessage.success('창고 수정 완료')
@@ -127,6 +140,11 @@ async function submitEdit() {
 }
 
 function confirmClose() {
+  if (!isAdmin()) {
+    ElMessage.error('권한이 없습니다.')
+    return
+  }
+
   ElMessageBox.confirm('창고를 폐쇄하시겠습니까?', '창고 폐쇄', {
     confirmButtonText: '예',
     cancelButtonText: '아니오',

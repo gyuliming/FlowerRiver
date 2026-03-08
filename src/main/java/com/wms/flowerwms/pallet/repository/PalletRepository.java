@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PalletRepository extends JpaRepository<Pallet, Long> {
-    Optional<Pallet> findByCode(String code);
+    List<Pallet> findBySectionId(Long sectionId);
 
     // 구역별 팔레트 목록 조회 (정렬은 id 기준)
     List<Pallet> findBySectionIdOrderByIdAsc(Long sectionId);

@@ -48,7 +48,7 @@ public class WarehouseCommandService {
 
         Section cold = sectionRepository.save(
                 Section.builder()
-                        .code(warehouse.getCode() + "COLD")
+                        .code(warehouse.getCode() + "-COLD")
                         .type(SectionType.COLD)
                         .warehouse(warehouse)
                         .build()
@@ -56,7 +56,7 @@ public class WarehouseCommandService {
 
         Section normal = sectionRepository.save(
                 Section.builder()
-                        .code(warehouse.getCode() + "NORMAL")
+                        .code(warehouse.getCode() + "-NORMAL")
                         .type(SectionType.NORMAL)
                         .warehouse(warehouse)
                         .build()
