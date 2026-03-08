@@ -6,6 +6,7 @@ import com.wms.flowerwms.member.domain.MemberStatus;
 import com.wms.flowerwms.member.dto.MemberApproveRequest;
 import com.wms.flowerwms.member.dto.MemberCreateRequest;
 import com.wms.flowerwms.member.dto.MemberUpdateRequest;
+import com.wms.flowerwms.member.dto.PasswordChangeRequest;
 import com.wms.flowerwms.member.repository.MemberRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
@@ -70,5 +71,17 @@ public class MemberCommandService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         member.updateInfo(req.getName(), req.getPhone(), req.getEmail());
+    }
+
+    @Transactional
+    public void changePassword(Long memberId, PasswordChangeRequest req) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        if (!passwordEncoder.matches(req.getCurrentPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        member.changePassword(passwordEncoder.encode(req.getNewPassword()));
     }
 }

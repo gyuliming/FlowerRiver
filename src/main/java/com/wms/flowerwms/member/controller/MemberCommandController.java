@@ -4,6 +4,7 @@ import com.wms.flowerwms.global.response.ApiResponse;
 import com.wms.flowerwms.member.dto.MemberApproveRequest;
 import com.wms.flowerwms.member.dto.MemberCreateRequest;
 import com.wms.flowerwms.member.dto.MemberUpdateRequest;
+import com.wms.flowerwms.member.dto.PasswordChangeRequest;
 import com.wms.flowerwms.member.service.MemberCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,15 @@ public class MemberCommandController {
                                           @RequestBody MemberUpdateRequest req) {
         Long memberId = (Long) authentication.getPrincipal();
         memberCommandService.updateMyInfo(memberId, req);
+        return ResponseEntity.ok().build();
+    }
+
+    // 비밀번호 변경
+    @PatchMapping("/me/password")
+    public ResponseEntity<?> changePassword(Authentication authentication,
+                                            @RequestBody @Valid PasswordChangeRequest req) {
+        Long memberId = (Long) authentication.getPrincipal();
+        memberCommandService.changePassword(memberId, req);
         return ResponseEntity.ok().build();
     }
 }

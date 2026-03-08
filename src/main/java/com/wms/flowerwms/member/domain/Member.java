@@ -77,9 +77,15 @@ public class Member {
         this.status = status;
     }
 
+    // 내 정보 수정
     public void updateInfo(String name, String phone, String email) {
         this.name = name;
         this.phone = phone;
         this.email = email;
+    }
+
+    // 비밀번호 변경
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
     }
 }
