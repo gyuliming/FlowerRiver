@@ -8,6 +8,7 @@ import com.wms.flowerwms.pallet.service.PalletCodeGenerator;
 import com.wms.flowerwms.section.domain.Section;
 import com.wms.flowerwms.section.domain.SectionType;
 import com.wms.flowerwms.section.repository.SectionRepository;
+import com.wms.flowerwms.stock.repository.StockRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.domain.WarehouseCodeGenerator;
 import com.wms.flowerwms.warehouse.dto.WarehouseCreateRequest;
@@ -30,6 +31,7 @@ public class WarehouseCommandService {
     private final PalletCodeGenerator palletCodeGenerator;
     private final WarehouseCodeGenerator warehouseCodeGenerator;
     private final MemberRepository memberRepository;
+    private final StockRepository stockRepository;
 
     // 창고 등록
     @Transactional
@@ -97,6 +99,12 @@ public class WarehouseCommandService {
     public void closeWarehouse(Long id) {
         Warehouse warehouse = warehouseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다."));
+
+        // 재고가 남아있으면 폐쇄 불가능
+        long remainStock = stockRepository.sumTotalStockBoxByWarehouse(id);
+        if (remainStock > 0) {
+            throw new IllegalArgumentException(remainStock + "박스의 재고가 남아있어 창고를 폐쇄할 수 없습니다.");
+        }
         warehouse.close();
         memberRepository.findByWarehouseId(id)
                 .ifPresent(member -> member.updateStatus(MemberStatus.INACTIVE));
