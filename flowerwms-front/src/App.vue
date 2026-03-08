@@ -15,6 +15,10 @@
             active-text-color="#FFD700"
             style="border-right: none;"
         >
+
+          <el-menu-item index="/my-page">내 정보</el-menu-item>
+          <el-divider style="margin: 1px 0; border-color: #D5B270;" />
+
           <el-menu-item index="/dashboard">대시보드</el-menu-item>
           <el-divider style="margin: 1px 0; border-color: #D5B270;" />
 

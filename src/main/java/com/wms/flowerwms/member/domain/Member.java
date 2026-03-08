@@ -76,4 +76,10 @@ public class Member {
     public void updateStatus(MemberStatus status) {
         this.status = status;
     }
+
+    public void updateInfo(String name, String phone, String email) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+    }
 }

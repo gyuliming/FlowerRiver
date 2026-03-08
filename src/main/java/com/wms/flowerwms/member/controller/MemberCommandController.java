@@ -3,9 +3,12 @@ package com.wms.flowerwms.member.controller;
 import com.wms.flowerwms.global.response.ApiResponse;
 import com.wms.flowerwms.member.dto.MemberApproveRequest;
 import com.wms.flowerwms.member.dto.MemberCreateRequest;
+import com.wms.flowerwms.member.dto.MemberUpdateRequest;
 import com.wms.flowerwms.member.service.MemberCommandService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,5 +37,14 @@ public class MemberCommandController {
     public ApiResponse<Void> reject(@PathVariable Long memberId) {
         memberCommandService.reject(memberId);
         return ApiResponse.success("거절되었습니다.", null);
+    }
+
+    // 내 정보
+    @PutMapping("/me")
+    public ResponseEntity<?> updateMyInfo(Authentication authentication,
+                                          @RequestBody MemberUpdateRequest req) {
+        Long memberId = (Long) authentication.getPrincipal();
+        memberCommandService.updateMyInfo(memberId, req);
+        return ResponseEntity.ok().build();
     }
 }

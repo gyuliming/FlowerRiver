@@ -5,6 +5,7 @@ import com.wms.flowerwms.member.domain.MemberRole;
 import com.wms.flowerwms.member.domain.MemberStatus;
 import com.wms.flowerwms.member.dto.MemberApproveRequest;
 import com.wms.flowerwms.member.dto.MemberCreateRequest;
+import com.wms.flowerwms.member.dto.MemberUpdateRequest;
 import com.wms.flowerwms.member.repository.MemberRepository;
 import com.wms.flowerwms.warehouse.domain.Warehouse;
 import com.wms.flowerwms.warehouse.repository.WarehouseRepository;
@@ -62,5 +63,12 @@ public class MemberCommandService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         member.reject();
+    }
+
+    @Transactional
+    public void updateMyInfo(Long memberId, MemberUpdateRequest req) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        member.updateInfo(req.getName(), req.getPhone(), req.getEmail());
     }
 }

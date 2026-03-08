@@ -3,9 +3,11 @@ package com.wms.flowerwms.member.query.controller;
 import com.wms.flowerwms.global.paging.PageResponse;
 import com.wms.flowerwms.global.response.ApiResponse;
 import com.wms.flowerwms.member.domain.MemberStatus;
+import com.wms.flowerwms.member.query.dto.MemberInfoResponse;
 import com.wms.flowerwms.member.query.dto.MemberListRow;
 import com.wms.flowerwms.member.query.service.MemberQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,5 +24,11 @@ public class MemberQueryController {
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
         return ApiResponse.success(memberQueryService.listAll(status, page, size));
+    }
+
+    @GetMapping("/me")
+    public ApiResponse<MemberInfoResponse> getMyInfo(Authentication authentication) {
+        Long memberId = (Long) authentication.getPrincipal();
+        return ApiResponse.success(memberQueryService.getMyInfo(memberId));
     }
 }
