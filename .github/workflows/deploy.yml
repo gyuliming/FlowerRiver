@@ -17,7 +17,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Build with Gradle
-        run: ./gradlew bootJar
+        run: |
+          chmod +x ./gradlew
+          ./gradlew bootJar
 
       - name: Docker Hub 로그인
         uses: docker/login-action@v2
@@ -50,6 +52,8 @@ jobs:
               -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/flowerwms \
               -e SPRING_DATASOURCE_USERNAME=wms \
               -e SPRING_DATASOURCE_PASSWORD=wms1234 \
+              -e JWT_SECRET=flowerwms-secret-key-must-be-at-least-256-bits-long-for-hs256 \
+              -e JWT_EXPIRATION=86400000 \
               -p 8080:8080 gyuliming/flowerwms-backend:latest
             docker run -d --name frontend --network flowerwms-network \
               -p 80:80 gyuliming/flowerwms-frontend:latest

@@ -37,6 +37,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/members/register").permitAll()
 
+                        // Swagger 허용
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+
                         // ADMIN 만
                         .requestMatchers(HttpMethod.POST, "/api/warehouses").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/warehouses/**").hasRole("ADMIN")
