@@ -10,6 +10,7 @@
               <el-option label="대기" value="PENDING" />
               <el-option label="승인" value="ACTIVE" />
               <el-option label="거절" value="REJECTED" />
+              <el-option label="비활성화" value="INACTIVE" />
             </el-select>
             <el-button type="primary" @click="search">검색</el-button>
           </div>
@@ -23,17 +24,26 @@
         <el-table-column prop="email" label="이메일" min-width="180" />
         <el-table-column prop="warehouseName" label="담당 창고" min-width="150" />
         <el-table-column prop="createdAt" label="가입일자" min-width="180" />
-        <el-table-column label="상태" min-width="180" align="center">
+        <el-table-column label="상태" min-width="120" align="center">
+          <template #default="{ row }">
+            <el-tag v-if="row.status === 'PENDING'" type="warning">대기</el-tag>
+            <el-tag v-else-if="row.status === 'ACTIVE'" type="success">활성</el-tag>
+            <el-tag v-else-if="row.status === 'REJECTED'" type="danger">반려</el-tag>
+            <el-tag v-else-if="row.status === 'INACTIVE'" type="info">비활성</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="관리" min-width="180" align="center">
           <template #default="{ row }">
             <template v-if="row.status === 'PENDING'">
               <el-button size="small" type="success" @click="openApprove(row)">승인</el-button>
               <el-button size="small" type="danger" @click="handleReject(row.id)">거절</el-button>
             </template>
-            <template v-else-if="row.status === 'ACTIVE'">
-              <el-tag type="success">승인완료</el-tag>
+            <template v-else-if="row.status === 'INACTIVE'">
+              <el-button size="small" type="warning" @click="openApprove(row)">재배정</el-button>
             </template>
-            <template v-else-if="row.status === 'REJECTED'">
-              <el-tag type="danger">거절됨</el-tag>
+            <template v-else>
+              -
             </template>
           </template>
         </el-table-column>

@@ -2,6 +2,7 @@ package com.wms.flowerwms.global.config;
 
 import com.wms.flowerwms.global.jwt.JwtAuthenticationFilter;
 import com.wms.flowerwms.global.jwt.JwtTokenProvider;
+import com.wms.flowerwms.member.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,7 +25,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
@@ -49,7 +50,7 @@ public class SecurityConfig {
                         .anyRequest().hasAnyRole("ADMIN", "MANAGER")
                 )
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider),
+                        new JwtAuthenticationFilter(jwtTokenProvider, memberRepository),
                         UsernamePasswordAuthenticationFilter.class
                 );
 

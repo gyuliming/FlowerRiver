@@ -72,4 +72,8 @@ public class Member {
     public void reject() {
         this.status = MemberStatus.REJECTED;
     }
+
+    public void updateStatus(MemberStatus status) {
+        this.status = status;
+    }
 }

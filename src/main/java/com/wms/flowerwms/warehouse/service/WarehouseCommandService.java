@@ -1,5 +1,7 @@
 package com.wms.flowerwms.warehouse.service;
 
+import com.wms.flowerwms.member.domain.MemberStatus;
+import com.wms.flowerwms.member.repository.MemberRepository;
 import com.wms.flowerwms.pallet.domain.Pallet;
 import com.wms.flowerwms.pallet.repository.PalletRepository;
 import com.wms.flowerwms.pallet.service.PalletCodeGenerator;
@@ -27,6 +29,7 @@ public class WarehouseCommandService {
     private final PalletRepository palletRepository;
     private final PalletCodeGenerator palletCodeGenerator;
     private final WarehouseCodeGenerator warehouseCodeGenerator;
+    private final MemberRepository memberRepository;
 
     // 창고 등록
     @Transactional
@@ -95,5 +98,7 @@ public class WarehouseCommandService {
         Warehouse warehouse = warehouseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다."));
         warehouse.close();
+        memberRepository.findByWarehouseId(id)
+                .ifPresent(member -> member.updateStatus(MemberStatus.INACTIVE));
     }
 }

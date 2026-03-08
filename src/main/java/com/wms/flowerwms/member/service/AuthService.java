@@ -26,8 +26,10 @@ public class AuthService {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다.");
         }
 
-        if (member.getStatus() != MemberStatus.ACTIVE) {
+        if (member.getStatus() == (MemberStatus.PENDING) || member.getStatus() == MemberStatus.REJECTED) {
             throw new IllegalArgumentException("승인되지 않은 계정입니다. 관리자에게 문의하세요.");
+        } else if (member.getStatus() == MemberStatus.INACTIVE) {
+            throw new IllegalArgumentException("임시 비활성화된 계정입니다. 관리자에게 문의하세요.");
         }
 
         Long warehouseId = member.getWarehouse() != null ? member.getWarehouse().getId() : null;

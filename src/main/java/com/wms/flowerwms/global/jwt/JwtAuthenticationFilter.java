@@ -1,5 +1,8 @@
 package com.wms.flowerwms.global.jwt;
 
+import com.wms.flowerwms.member.domain.Member;
+import com.wms.flowerwms.member.domain.MemberStatus;
+import com.wms.flowerwms.member.repository.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -30,6 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Long memberId = jwtTokenProvider.getMemberId(token);
             String role = jwtTokenProvider.getRole(token).name();
             Long warehouseId = jwtTokenProvider.getWarehouseId(token);
+
+            Member member = memberRepository.findById(memberId).orElse(null);
+            if (member == null || member.getStatus() == MemberStatus.INACTIVE) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "비활성화된 계정입니다.");
+                return;
+            }
 
             // SecurityContext에 인증 정보 저장
             UsernamePasswordAuthenticationToken authentication =

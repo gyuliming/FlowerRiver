@@ -78,7 +78,7 @@
     <el-card style="margin-bottom:16px;">
       <template #header>
         <span style="font-weight:600;">
-          {{ isAdmin() ? '창고별 재고 현황 (TOP 10)' : '상품별 재고 현황' }}
+          {{ isAdmin() ? '창고별 재고 현황 ' : '상품별 재고 현황' }}
         </span>
       </template>
       <div ref="chartRef" style="width:100%; height:300px;" />

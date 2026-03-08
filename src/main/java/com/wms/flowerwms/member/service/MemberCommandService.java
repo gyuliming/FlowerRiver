@@ -2,6 +2,7 @@ package com.wms.flowerwms.member.service;
 
 import com.wms.flowerwms.member.domain.Member;
 import com.wms.flowerwms.member.domain.MemberRole;
+import com.wms.flowerwms.member.domain.MemberStatus;
 import com.wms.flowerwms.member.dto.MemberApproveRequest;
 import com.wms.flowerwms.member.dto.MemberCreateRequest;
 import com.wms.flowerwms.member.repository.MemberRepository;
@@ -49,7 +50,7 @@ public class MemberCommandService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 창고입니다."));
 
         // 해당 창고에 이미 담당자가 있는지 확인
-        if (memberRepository.existsByWarehouse(warehouse)) {
+        if (memberRepository.existsByWarehouseAndStatus(warehouse, MemberStatus.ACTIVE)) {
             throw new IllegalArgumentException("해당 창고에 이미 담당자가 있습니다.");
         }
 

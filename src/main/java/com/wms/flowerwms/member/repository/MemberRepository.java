@@ -18,7 +18,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByLoginId(String loginId);
     boolean existsByRole(MemberRole role);
     Optional<Member> findByLoginId(String loginId);
-    boolean existsByWarehouse(Warehouse warehouse);
+    boolean existsByWarehouseAndStatus(Warehouse warehouse, MemberStatus status);
+    Optional<Member> findByWarehouseId(Long warehouseId);
+
 
     @Query("""
     select new com.wms.flowerwms.member.query.dto.MemberListRow(
