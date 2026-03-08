@@ -54,7 +54,7 @@ public class StockQueryController {
     // 해당 상품 보유 창고 목록
     @GetMapping("/warehouses")
     public ApiResponse<List<StockWarehouseRow>> getStockWarehouses(
-            @RequestParam Long productId
+            @RequestParam(required = false) Long productId
     ) {
         Long warehouseId = SecurityUtil.isAdmin() ? null : SecurityUtil.getCurrentWarehouseId();
         return ApiResponse.success(stockRepository.findStockWarehouses(productId, warehouseId));

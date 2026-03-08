@@ -74,30 +74,22 @@ async function onProductChange(id) {
   const res = await fetchStockWarehouses(id)
   let warehouses = res.data.data
 
-  // MANAGER 는 자기 창고만
   if (!isAdmin()) {
     warehouses = warehouses.filter(w => w.id === Number(state.warehouseId))
-    if (warehouses.length === 1) {
-      form.value.warehouseId = warehouses[0].id
-      onWarehouseChange(warehouses[0].id)
-    }
   }
 
   warehouseOptions.value = warehouses
+
+  if (!isAdmin() && warehouses.length === 1) {
+    form.value.warehouseId = warehouses[0].id
+    onWarehouseChange(warehouses[0].id)
+  }
 }
 
 onMounted(async () => {
-  const res = await fetchStockProducts()
-  let products = res.data.data
-
-  // MANAGER 는 자기 창고 재고 있는 상품만
-  if (!isAdmin()) {
-    const warehouseRes = await fetchStockWarehouses(null)
-    // 자기 창고 재고 있는 상품만 필터
-    products = products.filter(p => p.warehouseIds?.includes(Number(state.warehouseId)))
-  }
-
-  productOptions.value = products
+  const warehouseId = isAdmin() ? null : state.warehouseId
+  const res = await fetchStockProducts(warehouseId)
+  productOptions.value = res.data.data
 })
 
 function onWarehouseChange(id) {

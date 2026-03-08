@@ -109,7 +109,7 @@ onMounted(async () => {
     // 자동 선택
     if (warehouseOptions.value.length === 1) {
       form.value.warehouseId = warehouseOptions.value[0].id
-      await onWarehouseChange(form.value.warehouseId)
+      // await onWarehouseChange(form.value.warehouseId)
     }
   }
 })

@@ -22,6 +22,24 @@
             </div>
           </el-card>
         </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">오늘 입고</div>
+              <div style="font-size:32px; font-weight:700; color:#67C23A;">{{ summary.todayInboundCount }}</div>
+              <div style="font-size:12px; color:#999;">건 / {{ summary.todayInboundBox }} 박스</div>
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="6">
+          <el-card shadow="hover">
+            <div style="text-align:center;">
+              <div style="font-size:14px; color:#999; margin-bottom:8px;">오늘 출고</div>
+              <div style="font-size:32px; font-weight:700; color:#F56C6C;">{{ summary.todayOutboundCount }}</div>
+              <div style="font-size:12px; color:#999;">건 / {{ summary.todayOutboundBox }} 박스</div>
+            </div>
+          </el-card>
+        </el-col>
       </template>
 
       <!-- MANAGER -->
@@ -60,7 +78,7 @@
     <el-card style="margin-bottom:16px;">
       <template #header>
         <span style="font-weight:600;">
-          {{ isAdmin() ? '창고별 재고 현황 (TOP 10)' : '상품별 재고 현황 (TOP 10)' }}
+          {{ isAdmin() ? '창고별 재고 현황 (TOP 10)' : '상품별 재고 현황' }}
         </span>
       </template>
       <div ref="chartRef" style="width:100%; height:300px;" />
@@ -131,7 +149,8 @@ function renderChart(data, labelKey, valueKey) {
     tooltip: { trigger: 'axis' },
     xAxis: {
       type: 'category',
-      data: data.map(d => d[labelKey])
+      data: data.map(d => d[labelKey]),
+      axisLabel: { rotate : 45 }
     },
     yAxis: { type: 'value', name: '박스' },
     series: [{
