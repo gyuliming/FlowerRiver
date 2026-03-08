@@ -4,8 +4,14 @@ import com.wms.flowerwms.product.domain.FlowerType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 public class ProductCreateRequest {
     @NotBlank(message = "상품명을 입력해주세요.")
