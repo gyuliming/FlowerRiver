@@ -24,7 +24,7 @@
 
           <!-- ADMIN만 보임 -->
           <template v-if="isAdmin()">
-              <el-menu-item index="/members">회원 목록</el-menu-item>
+              <el-menu-item index="/members">회원 관리</el-menu-item>
               <el-divider style="margin: 1px 0; border-color: #D5B270;" />
           </template>
 
@@ -58,7 +58,7 @@
 
           <el-sub-menu index="stock">
             <template #title>재고 관리</template>
-            <el-menu-item index="/stocks">재고 현황</el-menu-item>
+            <el-menu-item index="/stocks">재고 목록</el-menu-item>
             <el-menu-item index="/stocks/history">재고 이력</el-menu-item>
           </el-sub-menu>
           <el-divider style="margin: 1px 0; border-color: #D5B270;" />

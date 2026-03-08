@@ -3,15 +3,10 @@
     <el-card>
       <template #header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600;">상품 목록</span>
           <div style="display:flex; gap:8px; align-items:center;">
-            <el-input
-                v-model="keyword"
-                placeholder="상품 코드 / 상품명 검색"
-                clearable
-                @keyup.enter="search"
-                style="max-width: 300px;"
-            />
-            <el-select v-model="type" placeholder="종류" clearable style="width: 120px;">
+            <el-input v-model="keyword" placeholder="상품 코드 / 상품명 검색" clearable @keyup.enter="search" style="max-width:300px;" />
+            <el-select v-model="type" placeholder="종류" clearable style="width:120px;">
               <el-option label="절화" value="CUT" />
               <el-option label="화분" value="POTTED" />
               <el-option label="가공화" value="PROCESSED" />

@@ -27,30 +27,30 @@
 
     const routes = [
         { path: '/login', component: Login, meta: { public: true, title: '로그인' } },
-        { path: '/register', component: Register, meta: { public: true, title: '회원가입 요청' } },
+        { path: '/register', component: Register, meta: { public: true, title: '회원가입' } },
 
         { path: '/my-page', component: MyPage, meta: { title: '내 정보' } },
 
         { path: '/', redirect: '/dashboard' },
         { path: '/dashboard', component: Dashboard, meta: { title: '대시보드' } },
 
-        { path: '/members', component: MemberList, meta: { adminOnly: true, title: '회원 목록' } },
+        { path: '/members', component: MemberList, meta: { adminOnly: true, title: '회원 관리' } },
 
-        { path: '/warehouses', component: WarehouseList, meta: { title: '창고 목록' } },
-        { path: '/warehouses/register', component: WarehouseRegister, meta: { title: '창고 등록' } },
-        { path: '/warehouses/:id', component: WarehouseDetail, props: true, meta: { title: '창고 상세' } },
+        { path: '/warehouses', component: WarehouseList, meta: { title: '창고 관리' } },
+        { path: '/warehouses/register', component: WarehouseRegister, meta: { title: '창고 관리' } },
+        { path: '/warehouses/:id', component: WarehouseDetail, props: true, meta: { title: '창고 관리' } },
 
-        { path: '/products', component: ProductList, meta: { title: '상품 목록' } },
-        { path: '/products/register', component: ProductRegister, meta: { title: '상품 등록' } },
+        { path: '/products', component: ProductList, meta: { title: '상품 관리' } },
+        { path: '/products/register', component: ProductRegister, meta: { title: '상품 관리' } },
 
-        { path: '/inbound', component: InboundList, meta: { title: '입고 목록' } },
-        { path: '/inbound/register', component: InboundRegister, meta: { title: '입고 등록' } },
+        { path: '/inbound', component: InboundList, meta: { title: '입고 관리' } },
+        { path: '/inbound/register', component: InboundRegister, meta: { title: '입고 관리' } },
 
-        { path: '/outbound', component: OutboundList, meta: { title: '출고 목록' } },
-        { path: '/outbound/register', component: OutboundRegister, meta: { title: '출고 등록' } },
+        { path: '/outbound', component: OutboundList, meta: { title: '출고 관리' } },
+        { path: '/outbound/register', component: OutboundRegister, meta: { title: '출고 관리' } },
 
-        { path: '/stocks', component: StockList, meta: { title: '재고 현황' } },
-        { path: '/stocks/history', component: StockHistory, meta: { title: '재고 이력' } },
+        { path: '/stocks', component: StockList, meta: { title: '재고 관리' } },
+        { path: '/stocks/history', component: StockHistory, meta: { title: '재고 관리' } },
     ]
 
     const router = createRouter({

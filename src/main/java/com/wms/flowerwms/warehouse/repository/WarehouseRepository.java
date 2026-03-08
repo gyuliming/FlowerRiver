@@ -55,15 +55,16 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
     // 창고 상세 조회
     @Query("""
     select new com.wms.flowerwms.warehouse.query.dto.WarehouseDetailView(
-        w.id, w.code, w.name, w.address, w.status,
+        w.id, w.code, m.name, m.phone, w.name, w.address, w.status,
         coalesce(sum(p.maxBoxQty), 0),
         coalesce(sum(p.usedBoxQty), 0)
     )
     from Warehouse w
+    left join Member m on m.warehouse = w and m.status = 'ACTIVE'
     left join Section s on s.warehouse = w
     left join Pallet p on p.section = s
     where w.id = :warehouseId
-    group by w.id, w.code, w.name, w.address, w.status
+    group by w.id, w.code, m.name, m.phone, w.name, w.address, w.status
     """)
     WarehouseDetailView findDetail(@Param("warehouseId") Long warehouseId);
 
