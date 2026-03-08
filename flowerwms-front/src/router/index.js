@@ -1,4 +1,5 @@
     import { createRouter, createWebHistory } from 'vue-router'
+    import MyPage from '../views/member/MyPage.vue'
 
     import Dashboard from "../views/dashboard/Dashboard.vue"
 
@@ -28,12 +29,13 @@
         { path: '/login', component: Login, meta: { public: true, title: '로그인' } },
         { path: '/register', component: Register, meta: { public: true, title: '회원가입 요청' } },
 
+        { path: '/my-page', component: MyPage, meta: { title: '내 정보' } },
+
         { path: '/', redirect: '/dashboard' },
         { path: '/dashboard', component: Dashboard, meta: { title: '대시보드' } },
 
         { path: '/members', component: MemberList, meta: { adminOnly: true, title: '회원 목록' } },
 
-        { path: '/', redirect: '/warehouses' },
         { path: '/warehouses', component: WarehouseList, meta: { title: '창고 목록' } },
         { path: '/warehouses/register', component: WarehouseRegister, meta: { title: '창고 등록' } },
         { path: '/warehouses/:id', component: WarehouseDetail, props: true, meta: { title: '창고 상세' } },
@@ -49,8 +51,6 @@
 
         { path: '/stocks', component: StockList, meta: { title: '재고 현황' } },
         { path: '/stocks/history', component: StockHistory, meta: { title: '재고 이력' } },
-
-        { path: '/members', component: MemberList, meta: { adminOnly: true } },
     ]
 
     const router = createRouter({

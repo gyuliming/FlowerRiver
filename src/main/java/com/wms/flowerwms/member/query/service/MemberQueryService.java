@@ -1,7 +1,9 @@
 package com.wms.flowerwms.member.query.service;
 
 import com.wms.flowerwms.global.paging.PageResponse;
+import com.wms.flowerwms.member.domain.Member;
 import com.wms.flowerwms.member.domain.MemberStatus;
+import com.wms.flowerwms.member.query.dto.MemberInfoResponse;
 import com.wms.flowerwms.member.query.dto.MemberListRow;
 import com.wms.flowerwms.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +26,22 @@ public class MemberQueryService {
             return new PageResponse<>(memberRepository.findAllMembers(PageRequest.of(p - 1, s)));
         }
         return new PageResponse<>(memberRepository.findAllMembersByStatus(status, PageRequest.of(p - 1, s)));
+    }
+
+    @Transactional(readOnly = true)
+    public MemberInfoResponse getMyInfo(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        return new MemberInfoResponse(
+                member.getLoginId(),
+                member.getName(),
+                member.getPhone(),
+                member.getEmail(),
+                member.getRole(),
+                member.getStatus(),
+                member.getWarehouse() != null ? member.getWarehouse().getName() : null,
+                member.getCreatedAt(),
+                member.getUpdatedAt()
+        );
     }
 }
