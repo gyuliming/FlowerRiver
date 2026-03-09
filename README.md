@@ -148,8 +148,8 @@ feature/member    → PR → main (자동 배포)
 ![DemonstrationVideo](example.com)
 
 ## 트러블 슈팅
-> - [동시성 제어 낙관적 락 적용](https://www.notion.so/31e9c2c617128019b664ebd599a710e3?source=copy_link)
-> - [JPA N+1 문제](https://www.notion.so/JPA-N-1-31e9c2c6171280fb85b4f1b88f138c9d?source=copy_link)
+> - [동시성 제어 낙관적 락 적용](https://velog.io/@gyuliming/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4)
+> - [JPA N+1 문제](https://velog.io/@gyuliming/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-JPA-N1)
 
 
 ## 개선 목표
