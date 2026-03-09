@@ -127,14 +127,15 @@ feature/member    → PR → main (자동 배포)
 - 창고별 사용량 · 상품별 재고 현황 차트
 - 역할(ADMIN · MANAGER)별 화면 분리
 
-## 📊 ERD
-
-> [ERDCloud](https://www.erdcloud.com/d/beyxDYcCChufZAEiM) |
-[ERD Excel](https://docs.google.com/spreadsheets/d/1UXWe0mI-nLWYRVdn0BvdvfNkFDWYoL_h8kShQoyJAPA/edit?usp=sharing)
-
 ## 📋 API 명세
 
 > [Swagger UI](http://3.38.66.111/swagger-ui/index.html) | [API Excel](https://docs.google.com/spreadsheets/d/1yKoJoRnFobNhARaADYgSccdWfySPfkgFRguDhHQTLBs/edit?usp=sharing)
+
+## 📊 ERD
+> [ERDCloud](https://www.erdcloud.com/d/beyxDYcCChufZAEiM) |
+[ERD Excel](https://docs.google.com/spreadsheets/d/1UXWe0mI-nLWYRVdn0BvdvfNkFDWYoL_h8kShQoyJAPA/edit?usp=sharing)
+![ERD](docs/ERD.png)
+
 
 ## 프로젝트 구조(CQRS 패턴 적용)
 명령(Command)과 조회(Query)의 책임을 분리하여 설계했습니다.
