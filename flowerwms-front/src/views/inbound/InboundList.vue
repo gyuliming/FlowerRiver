@@ -3,14 +3,10 @@
     <el-card>
       <template #header>
         <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600;">입고 목록</span>
           <div style="display:flex; gap:8px; align-items:center;">
-            <el-select v-model="warehouseId" placeholder="창고 선택" clearable style="width: 160px;">
-              <el-option
-                  v-for="w in warehouseOptions"
-                  :key="w.id"
-                  :label="w.name"
-                  :value="w.id"
-              />
+            <el-select v-model="warehouseId" placeholder="창고 선택" clearable style="width:160px;">
+              <el-option v-for="w in warehouseOptions" :key="w.id" :label="w.name" :value="w.id" />
             </el-select>
             <el-button type="primary" @click="search">검색</el-button>
           </div>

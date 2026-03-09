@@ -11,7 +11,6 @@ import com.wms.flowerwms.outbound.service.OutboundCommandService;
 import com.wms.flowerwms.pallet.repository.PalletRepository;
 import com.wms.flowerwms.product.domain.FlowerType;
 import com.wms.flowerwms.product.dto.ProductCreateRequest;
-import com.wms.flowerwms.product.repository.ProductRepository;
 import com.wms.flowerwms.product.service.ProductCommandService;
 import com.wms.flowerwms.section.domain.SectionType;
 import com.wms.flowerwms.section.repository.SectionRepository;
@@ -36,7 +35,6 @@ public class InitDataLoader implements ApplicationRunner {
 
     private final MemberRepository memberRepository;
     private final WarehouseRepository warehouseRepository;
-    private final ProductRepository productRepository;
     private final SectionRepository sectionRepository;
     private final PalletRepository palletRepository;
     private final WarehouseCommandService warehouseCommandService;
@@ -67,15 +65,15 @@ public class InitDataLoader implements ApplicationRunner {
 
         // 2. 창고 3개 생성
         Long w1 = warehouseCommandService.createWarehouse(
-                new WarehouseCreateRequest("서울 물류센터", "서울 강서구 마곡중앙로 161")
+                new WarehouseCreateRequest("서울 물류센터", "서울 강서구 마곡중앙로 161-1")
         );
 
         Long w2 = warehouseCommandService.createWarehouse(
-                new WarehouseCreateRequest("경기 물류센터", "경기 고양시 덕양구 화신로 260")
+                new WarehouseCreateRequest("경기 물류센터", "경기 고양시 덕양구 화신로 259")
         );
 
         Long w3 = warehouseCommandService.createWarehouse(
-                new WarehouseCreateRequest("인천 물류센터", "인천 남동구 논현로 46")
+                new WarehouseCreateRequest("인천 물류센터", "인천 남동구 논현로 45")
         );
 
         // MANAGER 3명 생성 (각 창고 배정)

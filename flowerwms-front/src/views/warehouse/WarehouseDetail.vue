@@ -11,17 +11,19 @@
           </div>
         </div>
       </template>
-      <el-descriptions :column="3" border>
-        <el-descriptions-item label="코드">{{ warehouse.code }}</el-descriptions-item>
+      <el-descriptions :column="2" border>
+        <el-descriptions-item label="창고 코드">{{ warehouse.code }}</el-descriptions-item>
         <el-descriptions-item label="창고명">{{ warehouse.name }}</el-descriptions-item>
-        <el-descriptions-item label="상태">
+        <el-descriptions-item label="주소" :span="2">{{ warehouse.address }}</el-descriptions-item>
+        <el-descriptions-item label="담당 관리자">{{ warehouse.managerName }}</el-descriptions-item>
+        <el-descriptions-item label="관리자 연락처">{{ warehouse.managerPhone }}</el-descriptions-item>
+        <el-descriptions-item label="총 용량">{{ warehouse.totalCapacityBox }} 박스</el-descriptions-item>
+        <el-descriptions-item label="사용량">{{ warehouse.usedBox }} 박스</el-descriptions-item>
+        <el-descriptions-item label="상태" :span="2">
           <el-tag :type="warehouse.status === 'NORMAL' ? 'success' : 'danger'">
             {{ warehouse.status === 'NORMAL' ? '정상' : '폐쇄' }}
           </el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="주소">{{ warehouse.address }}</el-descriptions-item>
-        <el-descriptions-item label="총용량">{{ warehouse.totalCapacityBox }} 박스</el-descriptions-item>
-        <el-descriptions-item label="사용량">{{ warehouse.usedBox }} 박스</el-descriptions-item>
       </el-descriptions>
     </el-card>
 
@@ -95,6 +97,8 @@ const { isAdmin } = useAuth()
 const warehouse = ref({
   code: '',
   name: '',
+  managerName: '',
+  managerPhone: '',
   address: '',
   status: '',
   totalCapacityBox: 0,

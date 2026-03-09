@@ -15,10 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
-
-    // 코드로 창고 찾기(중복 확인용)
-    Optional<Warehouse> findByCode(String code);
-
     // 이름으로 창고 찾기(중복 확인용)
     Optional<Warehouse> findByName(String name);
 
@@ -47,6 +43,7 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
                and (:name is null or :name = '' or w.name like concat('%', :name, '%'))
                and (:address is null or :address = '' or w.address like concat('%', :address, '%'))
     group by w.id, w.code, w.name, w.address, w.status
+    order by w.createdAt desc
     """)
     Page<WarehouseListRow> searchWarehouses(
             @Param("keyword") String keyword,
@@ -57,32 +54,33 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, Long> {
 
     // 창고 상세 조회
     @Query("""
-        select new com.wms.flowerwms.warehouse.query.dto.WarehouseDetailView(
-            w.id, w.code, w.name, w.address, w.status,
-            coalesce(sum(p.maxBoxQty), 0),
-            coalesce(sum(p.usedBoxQty), 0)
-        )
-        from Warehouse w
-        left join Section s on s.warehouse = w
-        left join Pallet p on p.section = s
-        where w.id = :warehouseId
-        group by w.id, w.code, w.name, w.address, w.status
-        """)
+    select new com.wms.flowerwms.warehouse.query.dto.WarehouseDetailView(
+        w.id, w.code, m.name, m.phone, w.name, w.address, w.status,
+        coalesce(sum(p.maxBoxQty), 0),
+        coalesce(sum(p.usedBoxQty), 0)
+    )
+    from Warehouse w
+    left join Member m on m.warehouse = w and m.status = 'ACTIVE'
+    left join Section s on s.warehouse = w
+    left join Pallet p on p.section = s
+    where w.id = :warehouseId
+    group by w.id, w.code, m.name, m.phone, w.name, w.address, w.status
+    """)
     WarehouseDetailView findDetail(@Param("warehouseId") Long warehouseId);
 
     // 재고 있는 창고 중 재고 많은 순으로 TOP 10까지 보여줌
     @Query("""
-select new com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow(
-    w.name, coalesce(sum(s.boxQty), 0)
-)
-from Warehouse w
-left join Stock s on s.warehouse = w and s.boxQty > 0
-where w.status = 'NORMAL'
-and (:warehouseId is null or w.id = :warehouseId)
-group by w.id, w.name
-having coalesce(sum(s.boxQty), 0) > 0
-order by coalesce(sum(s.boxQty), 0) desc
-limit 10
-""")
+    select new com.wms.flowerwms.dashboard.dto.DashboardWarehouseUsageRow(
+        w.name, coalesce(sum(s.boxQty), 0)
+    )
+    from Warehouse w
+    left join Stock s on s.warehouse = w and s.boxQty > 0
+    where w.status = 'NORMAL'
+    and (:warehouseId is null or w.id = :warehouseId)
+    group by w.id, w.name
+    having coalesce(sum(s.boxQty), 0) > 0
+    order by coalesce(sum(s.boxQty), 0) desc
+    limit 10
+    """)
     List<DashboardWarehouseUsageRow> findWarehouseUsage(@Param("warehouseId") Long warehouseId);
 }

@@ -1,22 +1,18 @@
 <template>
   <el-card>
     <template #header>
-      <div style="display:flex; gap:8px; align-items:center;">
-<!--      검색 드롭다운 형태-->
-        <el-input
-            v-model="keyword"
-            placeholder="검색어를 입력해주세요."
-            clearable
-            @keyup.enter="search"
-            style="max-width: 300px;"
-        />
-        <el-select v-model="searchType" style="width: 120px;">
-          <el-option label="전체" value="all" />
-          <el-option label="코드" value="code" />
-          <el-option label="창고명" value="name" />
-          <el-option label="주소" value="address" />
-        </el-select>
-        <el-button type="primary" @click="search">검색</el-button>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:600;">창고 목록</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <el-input v-model="keyword" placeholder="검색어를 입력해주세요." clearable @keyup.enter="search" style="max-width:300px;" />
+          <el-select v-model="searchType" style="width:120px;">
+            <el-option label="전체" value="all" />
+            <el-option label="코드" value="code" />
+            <el-option label="창고명" value="name" />
+            <el-option label="주소" value="address" />
+          </el-select>
+          <el-button type="primary" @click="search">검색</el-button>
+        </div>
       </div>
     </template>
 

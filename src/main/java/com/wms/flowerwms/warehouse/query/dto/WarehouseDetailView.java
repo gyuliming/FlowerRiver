@@ -9,6 +9,8 @@ import java.util.List;
 public class WarehouseDetailView {
     private final Long id;
     private final String code;
+    private final String managerName;
+    private final String managerPhone;
     private final String name;
     private final String address;
     private final WarehouseStatus status;
@@ -18,10 +20,12 @@ public class WarehouseDetailView {
 
     private List<SectionSummaryRow> sections;
 
-    public WarehouseDetailView(Long id, String code, String name, String address, WarehouseStatus status,
+    public WarehouseDetailView(Long id, String code, String managerName, String managerPhone, String name, String address, WarehouseStatus status,
                                long totalCapacityBox, long usedBox) {
         this.id = id;
         this.code = code;
+        this.managerName = managerName;
+        this.managerPhone = managerPhone;
         this.name = name;
         this.address = address;
         this.status = status;
