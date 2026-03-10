@@ -101,7 +101,7 @@ feature/member    → PR → main (자동 배포)
 
 
 ## 주요 기능
-
+> https://velog.io/@gyuliming/%EA%BD%83%EA%B0%80%EB%9E%8CFlowerRiver-WMS-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8
 ### 회원 관리
 - 회원 가입 요청 / 총관리자 승인 및 창고 배정
 - JWT 기반 인증 / ADMIN · MANAGER 역할 분리
@@ -143,9 +143,6 @@ feature/member    → PR → main (자동 배포)
 - **Query** : 데이터를 조회하는 작업(목록, 상세)
 
 ![Structure](docs/structure.png)
-
-## 시연 영상
-![DemonstrationVideo](example.com)
 
 ## 트러블 슈팅
 > - [동시성 제어 낙관적 락 적용](https://velog.io/@gyuliming/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4)
