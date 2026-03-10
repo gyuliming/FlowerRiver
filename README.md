@@ -2,11 +2,9 @@
 # 꽃가람(FlowerRiver)
 > [서비스 링크](http://3.38.66.111)
 
-## 프로젝트명 소개
+## 프로젝트 소개
 - **꽃(Flower) + 가람(River : 江)**
 - 꽃이 생산지에서 소비자에게 전달되기까지의 흐름과 유통 과정을 상징
-
-## 프로젝트 소개 및 주제 선정 이유
 
 꽃가람(FlowerWMS)은 화훼 유통업체를 위한 창고 관리 시스템입니다.
 창고별 구역/팔레트 단위의 재고 관리, 입출고 이력 추적, 담당자 권한 관리 기능을 제공합니다.
@@ -23,25 +21,6 @@
 | 개발 기간 | 2026.02.24 ~ 2026.03.09 (2주) |
 | 개발 인원 | 1인 (개인 프로젝트) |
 
-## 로컬 실행
-
-### 사전 요구사항
-- Java 17
-- MySQL 8
-- Node.js 18+
-
-### Backend
-```bash
-# application-local.yml 설정 후
-./gradlew bootRun
-```
-
-### Frontend
-```bash
-cd flowerwms-front
-npm install
-npm run dev
-```
 
 ## 개발 환경
 
@@ -71,7 +50,6 @@ npm run dev
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)
 
 ## 시스템 아키텍처
-
 ![SystemArchitecture](docs/architecture.png)
 
 
@@ -100,8 +78,30 @@ feature/member    → PR → main (자동 배포)
 | `test` | 테스트 코드 |
 
 
+## ERD
+
+> [ERDCloud](https://www.erdcloud.com/d/beyxDYcCChufZAEiM) |
+[ERD Excel](https://docs.google.com/spreadsheets/d/1UXWe0mI-nLWYRVdn0BvdvfNkFDWYoL_h8kShQoyJAPA/edit?usp=sharing)
+
+![ERD](docs/ERD.png)
+
+
+## 프로젝트 구조(CQRS 패턴 적용)
+명령(Command)과 조회(Query)의 책임을 분리하여 설계했습니다.
+- **Command** : 상태를 변경하는 작업(등록, 수정, 삭제)
+- **Query** : 데이터를 조회하는 작업(목록, 상세)
+
+![Structure](docs/structure.png)
+
+
+## API 명세
+
+> [Swagger UI](http://3.38.66.111/swagger-ui/index.html) | [API Excel](https://docs.google.com/spreadsheets/d/1yKoJoRnFobNhARaADYgSccdWfySPfkgFRguDhHQTLBs/edit?usp=sharing)
+
+
 ## 주요 기능
 > https://velog.io/@gyuliming/%EA%BD%83%EA%B0%80%EB%9E%8CFlowerRiver-WMS-%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8
+
 ### 회원 관리
 - 회원 가입 요청 / 총관리자 승인 및 창고 배정
 - JWT 기반 인증 / ADMIN · MANAGER 역할 분리
@@ -127,26 +127,12 @@ feature/member    → PR → main (자동 배포)
 - 창고별 사용량 · 상품별 재고 현황 차트
 - 역할(ADMIN · MANAGER)별 화면 분리
 
-## 📋 API 명세
-
-> [Swagger UI](http://3.38.66.111/swagger-ui/index.html) | [API Excel](https://docs.google.com/spreadsheets/d/1yKoJoRnFobNhARaADYgSccdWfySPfkgFRguDhHQTLBs/edit?usp=sharing)
-
-## 📊 ERD
-> [ERDCloud](https://www.erdcloud.com/d/beyxDYcCChufZAEiM) |
-[ERD Excel](https://docs.google.com/spreadsheets/d/1UXWe0mI-nLWYRVdn0BvdvfNkFDWYoL_h8kShQoyJAPA/edit?usp=sharing)
-![ERD](docs/ERD.png)
-
-
-## 프로젝트 구조(CQRS 패턴 적용)
-명령(Command)과 조회(Query)의 책임을 분리하여 설계했습니다.
-- **Command** : 상태를 변경하는 작업(등록, 수정, 삭제)
-- **Query** : 데이터를 조회하는 작업(목록, 상세)
-
-![Structure](docs/structure.png)
 
 ## 트러블 슈팅
 > - [동시성 제어 낙관적 락 적용](https://velog.io/@gyuliming/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4)
 > - [JPA N+1 문제](https://velog.io/@gyuliming/%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85-JPA-N1)
+
+
 
 
 ## 개선 목표
@@ -183,3 +169,24 @@ feature/member    → PR → main (자동 배포)
 - 기획 → 설계 → 개발 → 배포 전체 흐름을 혼자 경험하면서 각 단계가 어떻게 연결되는지 이해할 수 있었습니다.
 
 - 팀 프로젝트에서는 맡은 파트만 집중했지만, 이번에는 프론트엔드와 백엔드를 번갈아 개발하면서 두 영역이 어떻게 연동되는지 직접 느낄 수 있었습니다.
+
+
+## 로컬 실행
+
+### 사전 요구사항
+- Java 17
+- MySQL 8
+- Node.js 18+
+
+### Backend
+```bash
+# application-local.yml 설정 후
+./gradlew bootRun
+```
+
+### Frontend
+```bash
+cd flowerwms-front
+npm install
+npm run dev
+```
