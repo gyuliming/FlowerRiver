@@ -52,6 +52,8 @@
 ## 시스템 아키텍처
 ![SystemArchitecture](docs/architecture.png)
 
+## 플로우차트
+>[Flowchart](https://docs.google.com/spreadsheets/d/1AVyjfRoImaak9jVDX4FQZASXnuNC1wzWXz6KZE3F1Ms/edit?usp=sharing)
 
 ## 브랜치 전략 및 컨벤션
 
