@@ -60,10 +60,11 @@
 | 브랜치 | 설명 |
 |--------|------|
 | `main` | 배포 브랜치 (push 시 CI/CD 자동 실행) |
+| `develop` | 개발 통합 브랜치 |
 | `feature/*` | 기능 개발 브랜치 |
 ```
-feature/warehouse → PR → main (자동 배포)
-feature/member    → PR → main (자동 배포)
+feature/warehouse → PR → develop → PR → main (자동 배포)
+feature/member    → PR → develop → PR → main (자동 배포)
 ```
 
 ### 커밋 컨벤션
